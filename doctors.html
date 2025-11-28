@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AFGOI HOSPITAL – Doctors</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg: #7f8bd7; /* purple background like dashboard */
+      --card-bg: #ffffff;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --border-soft: #e5e7eb;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+    }
+
+    .layout {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* SIDEBAR (simple copy of dashboard style) */
+    .sidebar {
+      width: 260px;
+      background: #0b1120;
+      color: #e5e7eb;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #38bdf8, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: white;
+    }
+
+    .sidebar-title-main {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .sidebar-title-sub {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    .sidebar-nav {
+      padding: 1rem 0.5rem 1.25rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .nav-section-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6b7280;
+      padding: 0.25rem 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.55rem 1rem;
+      margin: 0.15rem 0.5rem;
+      border-radius: 0.6rem;
+      font-size: 0.86rem;
+      color: #e5e7eb;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.15s ease, border-color 0.15s ease,
+        color 0.15s ease;
+      text-decoration: none;
+    }
+
+    .nav-item span.icon {
+      font-size: 1rem;
+      width: 1.4rem;
+      text-align: center;
+    }
+
+    .nav-item:hover {
+      background: rgba(37, 99, 235, 0.12);
+    }
+
+    .nav-item.active {
+      background: rgba(37, 99, 235, 0.18);
+      border-left-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .sidebar-footer {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.3);
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+
+    /* MAIN AREA */
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .topbar {
+      height: 64px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      gap: 1rem;
+    }
+
+    .topbar-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .topbar-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .topbar-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .content {
+      flex: 1;
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+
+    .page-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .page-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    /* FILTER BAR */
+
+    .filter-bar {
+      background: #ffffff;
+      border-radius: 0.9rem;
+      padding: 1rem 1.1rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+    }
+
+    .filter-bar select,
+    .filter-bar input {
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      padding: 0.45rem 0.9rem;
+      font-size: 0.85rem;
+      outline: none;
+      min-width: 140px;
+    }
+
+    .filter-bar input {
+      flex: 1;
+    }
+
+    .filter-bar select:focus,
+    .filter-bar input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+    }
+
+    /* TABLE CARD */
+
+    .card {
+      background: #ffffff;
+      border-radius: 0.9rem;
+      padding: 1rem 1.1rem 1.1rem;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    thead {
+      background: #f3f4f6;
+    }
+
+    th,
+    td {
+      padding: 0.7rem 0.75rem;
+      border-bottom: 1px solid var(--border-soft);
+      text-align: left;
+    }
+
+    th {
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    tbody tr:hover td {
+      background: #f9fafb;
+    }
+
+    .status-pill {
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    .status-on {
+      background: rgba(16, 185, 129, 0.1);
+      color: #059669;
+    }
+
+    .status-off {
+      background: rgba(156, 163, 175, 0.15);
+      color: #4b5563;
+    }
+
+    .status-surgery {
+      background: rgba(59, 130, 246, 0.12);
+      color: #1d4ed8;
+    }
+
+    @media (max-width: 900px) {
+      .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-circle">AH</div>
+        <div>
+          <div class="sidebar-title-main">AFGOI HOSPITAL</div>
+          <div class="sidebar-title-sub">Hospital Management System</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div style="width: 100%">
+          <div class="nav-section-label">Main Modules</div>
+
+          <a class="nav-item" href="afgoi-hms-dashboard.html">
+            <span class="icon">🏠</span>
+            <span>Dashboard (Overview)</span>
+          </a>
+
+          <a class="nav-item active" href="doctors.html">
+            <span class="icon">👨‍⚕️</span>
+            <span>Doctors</span>
+          </a>
+
+          <a class="nav-item" href="nurses.html">
+            <span class="icon">👩‍⚕️</span>
+            <span>Nurses</span>
+          </a>
+
+          <a class="nav-item" href="patients.html">
+            <span class="icon">🧑‍🦽</span>
+            <span>Patients</span>
+          </a>
+
+          <a class="nav-item" href="admissions.html">
+            <span class="icon">📥</span>
+            <span>Admissions</span>
+          </a>
+
+          <a class="nav-item" href="opd.html">
+            <span class="icon">🏥</span>
+            <span>OPD</span>
+          </a>
+
+          <a class="nav-item" href="laboratory.html">
+            <span class="icon">🧪</span>
+            <span>Laboratory</span>
+          </a>
+
+          <a class="nav-item" href="radiology.html">
+            <span class="icon">🖥️</span>
+            <span>Radiology / X-Ray</span>
+          </a>
+
+          <a class="nav-item" href="surgery.html">
+            <span class="icon">🩺</span>
+            <span>Surgery</span>
+          </a>
+
+          <a class="nav-item" href="pharmacy.html">
+            <span class="icon">💊</span>
+            <span>Pharmacy</span>
+          </a>
+
+          <a class="nav-item" href="billing.html">
+            <span class="icon">💰</span>
+            <span>Billing</span>
+          </a>
+
+          <a class="nav-item" href="inventory.html">
+            <span class="icon">📦</span>
+            <span>Inventory</span>
+          </a>
+
+          <a class="nav-item" href="hr.html">
+            <span class="icon">🧑‍💼</span>
+            <span>HR & Staff</span>
+          </a>
+
+          <a class="nav-item" href="emergency.html">
+            <span class="icon">🚨</span>
+            <span>Emergency</span>
+          </a>
+
+          <a class="nav-item" href="discharge.html">
+            <span class="icon">✅</span>
+            <span>Discharge</span>
+          </a>
+
+          <a class="nav-item" href="settings.html">
+            <span class="icon">⚙️</span>
+            <span>Settings</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span>© 2025 – AFGOI HMS</span>
+        <span>All Rights Reserved.</span>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-title">Doctors</div>
+          <div class="topbar-subtitle">
+            Manage all doctors, specialties & schedules
+          </div>
+        </div>
+      </header>
+
+      <section class="content">
+        <h1 class="page-title">Doctors List</h1>
+        <p class="page-subtitle">
+          Filter by specialty, status or search by doctor name. (Front-end
+          only demo.)
+        </p>
+
+        <!-- FILTER BAR -->
+        <div class="filter-bar">
+          <select id="filterSpecialty">
+            <option value="all">All Specialties</option>
+            <option value="cardiology">Cardiology</option>
+            <option value="pediatrics">Pediatrics</option>
+            <option value="surgery">Surgery</option>
+            <option value="general medicine">General Medicine</option>
+            <option value="neurology">Neurology</option>
+          </select>
+
+          <select id="filterStatus">
+            <option value="all">All Status</option>
+            <option value="on duty">On Duty</option>
+            <option value="off duty">Off Duty</option>
+            <option value="in surgery">In Surgery</option>
+          </select>
+
+          <input
+            id="searchName"
+            type="text"
+            placeholder="Search doctor name..."
+          />
+        </div>
+
+        <!-- TABLE -->
+        <div class="card">
+          <table id="doctorsTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Specialty</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Shift</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                data-specialty="cardiology"
+                data-status="on duty"
+                data-name="mohamed hassan"
+              >
+                <td>DR-001</td>
+                <td>Dr. Mohamed Hassan</td>
+                <td>Cardiology</td>
+                <td>+252 61 555 888</td>
+                <td><span class="status-pill status-on">On Duty</span></td>
+                <td>Morning</td>
+              </tr>
+
+              <tr
+                data-specialty="pediatrics"
+                data-status="off duty"
+                data-name="asha ali"
+              >
+                <td>DR-002</td>
+                <td>Dr. Asha Ali</td>
+                <td>Pediatrics</td>
+                <td>+252 61 201 445</td>
+                <td><span class="status-pill status-off">Off Duty</span></td>
+                <td>Evening</td>
+              </tr>
+
+              <tr
+                data-specialty="surgery"
+                data-status="in surgery"
+                data-name="abdirahman aden"
+              >
+                <td>DR-003</td>
+                <td>Dr. Abdirahman Aden</td>
+                <td>Surgery</td>
+                <td>+252 61 903 112</td>
+                <td>
+                  <span class="status-pill status-surgery">In Surgery</span>
+                </td>
+                <td>On-call</td>
+              </tr>
+
+              <tr
+                data-specialty="general medicine"
+                data-status="on duty"
+                data-name="fatima mohamed"
+              >
+                <td>DR-004</td>
+                <td>Dr. Fatima Mohamed</td>
+                <td>General Medicine</td>
+                <td>+252 61 700 221</td>
+                <td><span class="status-pill status-on">On Duty</span></td>
+                <td>Night</td>
+              </tr>
+
+              <tr
+                data-specialty="neurology"
+                data-status="off duty"
+                data-name="yasin nur"
+              >
+                <td>DR-005</td>
+                <td>Dr. Yasin Nur</td>
+                <td>Neurology</td>
+                <td>+252 61 799 002</td>
+                <td><span class="status-pill status-off">Off Duty</span></td>
+                <td>Morning</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- SIMPLE FILTER LOGIC -->
+  <script>
+    const specialtySelect = document.getElementById("filterSpecialty");
+    const statusSelect = document.getElementById("filterStatus");
+    const searchInput = document.getElementById("searchName");
+    const rows = document.querySelectorAll("#doctorsTable tbody tr");
+
+    function applyFilters() {
+      const specValue = specialtySelect.value.toLowerCase();
+      const statusValue = statusSelect.value.toLowerCase();
+      const searchValue = searchInput.value.trim().toLowerCase();
+
+      rows.forEach((row) => {
+        const rowSpec = row.dataset.specialty; // e.g. "cardiology"
+        const rowStatus = row.dataset.status; // e.g. "on duty"
+        const rowName = row.dataset.name; // e.g. "mohamed hassan"
+
+        const matchSpec =
+          specValue === "all" || rowSpec === specValue;
+        const matchStatus =
+          statusValue === "all" || rowStatus === statusValue;
+        const matchName =
+          !searchValue || rowName.includes(searchValue);
+
+        if (matchSpec && matchStatus && matchName) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    }
+
+    specialtySelect.addEventListener("change", applyFilters);
+    statusSelect.addEventListener("change", applyFilters);
+    searchInput.addEventListener("input", applyFilters);
+  </script>
+</body>
+</html>
