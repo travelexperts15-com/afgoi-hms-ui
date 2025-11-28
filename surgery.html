@@ -812,178 +812,191 @@
   </div>
 
   <script>
-    // Demo surgery data
-    const surgeryCases = [
-      {
-        id: "SUR-2025-001",
-        patient: "Ahmed Ali (#P-1021)",
-        procedure: "Appendectomy",
-        surgeon: "Dr. Hassan",
-        theatre: "OR-1",
-        type: "Emergency",
-        priority: "Stat",
-        status: "In Theatre",
-        start: "09:10",
-        end: "—"
-      },
-      {
-        id: "SUR-2025-002",
-        patient: "Hodan Ismail (#P-1033)",
-        procedure: "Cesarean Section (C-Section)",
-        surgeon: "Dr. Amina",
-        theatre: "OR-2",
-        type: "Elective",
-        priority: "Urgent",
-        status: "Scheduled",
-        start: "10:00",
-        end: "—"
-      },
-      {
-        id: "SUR-2025-003",
-        patient: "Yasin Noor (#P-0998)",
-        procedure: "ORIF – Tibia Fracture",
-        surgeon: "Dr. Mohamed",
-        theatre: "OR-3",
-        type: "Emergency",
-        priority: "Stat",
-        status: "Completed",
-        start: "08:00",
-        end: "09:05"
-      },
-      {
-        id: "SUR-2025-004",
-        patient: "Fartun Omar (#P-1005)",
-        procedure: "Laparoscopic Cholecystectomy",
-        surgeon: "Dr. Abdi",
-        theatre: "OR-1",
-        type: "Elective",
-        priority: "Routine",
-        status: "Completed",
-        start: "07:00",
-        end: "08:10"
-      },
-      {
-        id: "SUR-2025-005",
-        patient: "Abdullahi Mohamed (#P-1018)",
-        procedure: "Minor Skin Lesion Excision",
-        surgeon: "Dr. Ali",
-        theatre: "Minor OT",
-        type: "Elective",
-        priority: "Routine",
-        status: "Cancelled",
-        start: "—",
-        end: "—"
-      }
-    ];
+    document.addEventListener("DOMContentLoaded", function () {
+      // Demo surgery data
+      const surgeryCases = [
+        {
+          id: "SUR-2025-001",
+          patient: "Ahmed Ali (#P-1021)",
+          procedure: "Appendectomy",
+          surgeon: "Dr. Hassan",
+          theatre: "OR-1",
+          type: "Emergency",
+          priority: "Stat",
+          status: "In Theatre",
+          start: "09:10",
+          end: "—"
+        },
+        {
+          id: "SUR-2025-002",
+          patient: "Hodan Ismail (#P-1033)",
+          procedure: "Cesarean Section (C-Section)",
+          surgeon: "Dr. Amina",
+          theatre: "OR-2",
+          type: "Elective",
+          priority: "Urgent",
+          status: "Scheduled",
+          start: "10:00",
+          end: "—"
+        },
+        {
+          id: "SUR-2025-003",
+          patient: "Yasin Noor (#P-0998)",
+          procedure: "ORIF – Tibia Fracture",
+          surgeon: "Dr. Mohamed",
+          theatre: "OR-3",
+          type: "Emergency",
+          priority: "Stat",
+          status: "Completed",
+          start: "08:00",
+          end: "09:05"
+        },
+        {
+          id: "SUR-2025-004",
+          patient: "Fartun Omar (#P-1005)",
+          procedure: "Laparoscopic Cholecystectomy",
+          surgeon: "Dr. Abdi",
+          theatre: "OR-1",
+          type: "Elective",
+          priority: "Routine",
+          status: "Completed",
+          start: "07:00",
+          end: "08:10"
+        },
+        {
+          id: "SUR-2025-005",
+          patient: "Abdullahi Mohamed (#P-1018)",
+          procedure: "Minor Skin Lesion Excision",
+          surgeon: "Dr. Ali",
+          theatre: "Minor OT",
+          type: "Elective",
+          priority: "Routine",
+          status: "Cancelled",
+          start: "—",
+          end: "—"
+        }
+      ];
 
-    const tableBody = document.getElementById("surgeryTableBody");
-    const filterTheatre = document.getElementById("filterTheatre");
-    const filterType = document.getElementById("filterType");
-    const filterPriority = document.getElementById("filterPriority");
-    const filterStatus = document.getElementById("filterStatus");
-    const filterSearch = document.getElementById("filterSearch");
-    const globalSearch = document.getElementById("globalSearch");
+      const tableBody = document.getElementById("surgeryTableBody");
+      const filterTheatre = document.getElementById("filterTheatre");
+      const filterType = document.getElementById("filterType");
+      const filterPriority = document.getElementById("filterPriority");
+      const filterStatus = document.getElementById("filterStatus");
+      const filterSearch = document.getElementById("filterSearch");
+      const globalSearch = document.getElementById("globalSearch");
 
-    const statTotal = document.getElementById("statTotal");
-    const statInTheatre = document.getElementById("statInTheatre");
-    const statCompleted = document.getElementById("statCompleted");
-    const statCancelled = document.getElementById("statCancelled");
+      const statTotal = document.getElementById("statTotal");
+      const statInTheatre = document.getElementById("statInTheatre");
+      const statCompleted = document.getElementById("statCompleted");
+      const statCancelled = document.getElementById("statCancelled");
 
-    function getStatusClass(status) {
-      switch (status) {
-        case "Completed":
-          return "pill pill-green";
-        case "In Theatre":
-          return "pill pill-yellow";
-        case "Scheduled":
-          return "pill pill-blue";
-        case "Cancelled":
-          return "pill pill-red";
-        default:
-          return "pill";
-      }
-    }
-
-    function renderTable(rows) {
-      if (!rows.length) {
-        tableBody.innerHTML = `
-          <tr>
-            <td colspan="10" class="text-center">
-              No surgery cases found for the selected filters.
-            </td>
-          </tr>
-        `;
-        return;
+      function getStatusClass(status) {
+        switch (status) {
+          case "Completed":
+            return "pill pill-green";
+          case "In Theatre":
+            return "pill pill-yellow";
+          case "Scheduled":
+            return "pill pill-blue";
+          case "Cancelled":
+            return "pill pill-red";
+          default:
+            return "pill";
+        }
       }
 
-      tableBody.innerHTML = rows
-        .map(caseItem => `
-          <tr>
-            <td>${caseItem.id}</td>
-            <td>${caseItem.patient}</td>
-            <td>${caseItem.procedure}</td>
-            <td>${caseItem.surgeon}</td>
-            <td>${caseItem.theatre}</td>
-            <td>${caseItem.type}</td>
-            <td>${caseItem.priority}</td>
-            <td><span class="${getStatusClass(caseItem.status)}">${caseItem.status}</span></td>
-            <td>${caseItem.start}</td>
-            <td>${caseItem.end}</td>
-          </tr>
-        `)
-        .join("");
-    }
+      function renderTable(rows) {
+        if (!rows.length) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="10" class="text-center">
+                No surgery cases found for the selected filters.
+              </td>
+            </tr>
+          `;
+          return;
+        }
 
-    function updateStats(rows) {
-      statTotal.textContent = rows.length;
-      statInTheatre.textContent = rows.filter(c => c.status === "In Theatre").length;
-      statCompleted.textContent = rows.filter(c => c.status === "Completed").length;
-      statCancelled.textContent = rows.filter(c => c.status === "Cancelled").length;
-    }
+        tableBody.innerHTML = rows
+          .map(
+            (caseItem) => `
+            <tr>
+              <td>${caseItem.id}</td>
+              <td>${caseItem.patient}</td>
+              <td>${caseItem.procedure}</td>
+              <td>${caseItem.surgeon}</td>
+              <td>${caseItem.theatre}</td>
+              <td>${caseItem.type}</td>
+              <td>${caseItem.priority}</td>
+              <td><span class="${getStatusClass(caseItem.status)}">${caseItem.status}</span></td>
+              <td>${caseItem.start}</td>
+              <td>${caseItem.end}</td>
+            </tr>
+          `
+          )
+          .join("");
+      }
 
-    function applyFilters() {
-      const theatre = filterTheatre.value;
-      const type = filterType.value;
-      const priority = filterPriority.value;
-      const status = filterStatus.value;
-      const searchValue = (filterSearch.value || globalSearch.value || "").toLowerCase().trim();
+      function updateStats(rows) {
+        statTotal.textContent = rows.length;
+        statInTheatre.textContent = rows.filter((c) => c.status === "In Theatre").length;
+        statCompleted.textContent = rows.filter((c) => c.status === "Completed").length;
+        statCancelled.textContent = rows.filter((c) => c.status === "Cancelled").length;
+      }
 
-      const filtered = surgeryCases.filter(c => {
-        const matchTheatre = theatre === "all" || c.theatre === theatre;
-        const matchType = type === "all" || c.type === type;
-        const matchPriority = priority === "all" || c.priority === priority;
-        const matchStatus = status === "all" || c.status === status;
+      function applyFilters() {
+        const theatre = filterTheatre.value;
+        const type = filterType.value;
+        const priority = filterPriority.value;
+        const status = filterStatus.value;
 
-        const text = (
-          c.id +
-          " " +
-          c.patient +
-          " " +
-          c.procedure +
-          " " +
-          c.surgeon +
-          " " +
-          c.theatre
-        ).toLowerCase();
-        const matchSearch = !searchValue || text.includes(searchValue);
+        const searchValue = (
+          (filterSearch && filterSearch.value) ||
+          (globalSearch && globalSearch.value) ||
+          ""
+        )
+          .toLowerCase()
+          .trim();
 
-        return matchTheatre && matchType && matchPriority && matchStatus && matchSearch;
+        const filtered = surgeryCases.filter((c) => {
+          const matchTheatre = theatre === "all" || c.theatre === theatre;
+          const matchType = type === "all" || c.type === type;
+          const matchPriority = priority === "all" || c.priority === priority;
+          const matchStatus = status === "all" || c.status === status;
+
+          const text = (
+            c.id +
+            " " +
+            c.patient +
+            " " +
+            c.procedure +
+            " " +
+            c.surgeon +
+            " " +
+            c.theatre
+          ).toLowerCase();
+          const matchSearch = !searchValue || text.includes(searchValue);
+
+          return matchTheatre && matchType && matchPriority && matchStatus && matchSearch;
+        });
+
+        renderTable(filtered);
+        updateStats(filtered);
+      }
+
+      // Event listeners
+      [filterTheatre, filterType, filterPriority, filterStatus].forEach((el) => {
+        if (el) el.addEventListener("change", applyFilters);
       });
 
-      renderTable(filtered);
-      updateStats(filtered);
-    }
+      [filterSearch, globalSearch].forEach((el) => {
+        if (el) el.addEventListener("input", applyFilters);
+      });
 
-    [filterTheatre, filterType, filterPriority, filterStatus].forEach(el =>
-      el.addEventListener("change", applyFilters)
-    );
-    [filterSearch, globalSearch].forEach(el =>
-      el.addEventListener("input", applyFilters)
-    );
-
-    // Initial render
-    renderTable(surgeryCases);
-    updateStats(surgeryCases);
+      // Initial render with all cases
+      renderTable(surgeryCases);
+      updateStats(surgeryCases);
+    });
   </script>
 </body>
 </html>
