@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AFGOI HOSPITAL – Laboratory</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --bg: #778fd7;         /* isla background-ka dashboard-ka */
+      --card-bg: #FFFFFF;
+      --text-main: #111827;
+      --text-muted: #6B7280;
+      --border-soft: #E5E7EB;
+      --accent-green: #10B981;
+      --danger: #EF4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+    }
+
+    .layout {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: #0B1120;
+      color: #E5E7EB;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #38BDF8, #2563EB);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: white;
+    }
+
+    .sidebar-title {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .sidebar-title-main {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .sidebar-title-sub {
+      font-size: 0.75rem;
+      color: #9CA3AF;
+    }
+
+    .sidebar-nav {
+      padding: 1rem 0.5rem 1.25rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .nav-section-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6B7280;
+      padding: 0.25rem 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.55rem 1rem;
+      margin: 0.15rem 0.5rem;
+      border-radius: 0.6rem;
+      font-size: 0.86rem;
+      color: #E5E7EB;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+      text-decoration: none;
+    }
+
+    .nav-item span.icon {
+      font-size: 1rem;
+      width: 1.4rem;
+      text-align: center;
+    }
+
+    .nav-item:hover {
+      background: rgba(37, 99, 235, 0.12);
+    }
+
+    .nav-item.active {
+      background: rgba(37, 99, 235, 0.18);
+      border-left-color: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .sidebar-footer {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.3);
+      font-size: 0.75rem;
+      color: #6B7280;
+    }
+
+    .sidebar-footer span {
+      display: block;
+    }
+
+    /* Main */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* Topbar */
+    .topbar {
+      height: 64px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      gap: 1rem;
+    }
+
+    .topbar-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .topbar-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .topbar-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .topbar-center {
+      flex: 1;
+      max-width: 420px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .status-pill {
+      font-size: 0.78rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.06);
+      color: var(--accent-green);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #38BDF8, #2563EB);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .user-meta {
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.05rem;
+    }
+
+    .user-name {
+      font-weight: 500;
+    }
+
+    .user-role {
+      color: var(--text-muted);
+    }
+
+    /* Content */
+    .content {
+      flex: 1;
+      padding: 1.25rem 1.5rem 1.5rem;
+      overflow-y: auto;
+    }
+
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1rem;
+      gap: 1rem;
+    }
+
+    .content-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .content-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .content-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .content-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      background: #FFFFFF;
+      color: var(--text-main);
+      border-color: var(--border-soft);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary-dark);
+    }
+
+    .btn-ghost {
+      background: transparent;
+    }
+
+    .btn:active {
+      transform: translateY(0.5px);
+    }
+
+    /* Lab filters + cards */
+    .filters-row {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.9rem;
+    }
+
+    .select {
+      min-width: 150px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      padding: 0.4rem 0.7rem;
+      font-size: 0.82rem;
+      background: #FFFFFF;
+      outline: none;
+    }
+
+    .select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-small {
+      background: var(--card-bg);
+      border-radius: 0.7rem;
+      border: 1px solid var(--border-soft);
+      padding: 0.7rem 0.9rem;
+      font-size: 0.82rem;
+    }
+
+    .card-small-label {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .card-small-value {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    /* Table */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 0.7rem;
+      border: 1px solid var(--border-soft);
+      background: #FFFFFF;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      min-width: 780px;
+    }
+
+    thead {
+      background: #F9FAFB;
+    }
+
+    th, td {
+      padding: 0.55rem 0.7rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    tr:hover td {
+      background: #F9FAFB;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 500;
+    }
+
+    .pill-green {
+      background: rgba(16, 185, 129, 0.08);
+      color: var(--accent-green);
+    }
+
+    .pill-blue {
+      background: rgba(37, 99, 235, 0.08);
+      color: var(--primary-dark);
+    }
+
+    .pill-yellow {
+      background: rgba(245, 158, 11, 0.1);
+      color: #B45309;
+    }
+
+    .pill-red {
+      background: rgba(239, 68, 68, 0.08);
+      color: var(--danger);
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 220px;
+      }
+
+      .stats-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        height: auto;
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+      }
+
+      .sidebar-header {
+        display: none;
+      }
+
+      .sidebar-nav {
+        display: flex;
+        padding: 0.4rem;
+      }
+
+      .nav-item {
+        margin: 0.15rem;
+        padding: 0.4rem 0.6rem;
+        border-radius: 999px;
+      }
+
+      .sidebar-footer {
+        display: none;
+      }
+
+      .topbar {
+        padding: 0.6rem 0.9rem;
+      }
+
+      .content {
+        padding: 0.9rem;
+      }
+
+      .stats-row {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-row {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar-center {
+        display: none;
+      }
+
+      .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      table {
+        min-width: 620px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-circle">AH</div>
+        <div class="sidebar-title">
+          <span class="sidebar-title-main">AFGOI HOSPITAL</span>
+          <span class="sidebar-title-sub">Hospital Management System</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div style="width:100%;">
+          <div class="nav-section-label">Main Modules</div>
+
+          <a class="nav-item" href="afgoi-hms-dashboard.html">
+            <span class="icon">🏠</span>
+            <span>Dashboard (Overview)</span>
+          </a>
+
+          <a class="nav-item" href="doctors.html">
+            <span class="icon">👨‍⚕️</span>
+            <span>Doctors</span>
+          </a>
+
+          <a class="nav-item" href="nurses.html">
+            <span class="icon">👩‍⚕️</span>
+            <span>Nurses</span>
+          </a>
+
+          <a class="nav-item" href="patients.html">
+            <span class="icon">🧑‍🦽</span>
+            <span>Patients</span>
+          </a>
+
+          <a class="nav-item" href="admissions.html">
+            <span class="icon">📥</span>
+            <span>Admissions</span>
+          </a>
+
+          <a class="nav-item" href="opd.html">
+            <span class="icon">🏥</span>
+            <span>OPD</span>
+          </a>
+
+          <!-- ACTIVE: Laboratory -->
+          <a class="nav-item active" href="laboratory.html">
+            <span class="icon">🧪</span>
+            <span>Laboratory</span>
+          </a>
+
+          <a class="nav-item" href="radiology.html">
+            <span class="icon">🖥️</span>
+            <span>Radiology / X-Ray</span>
+          </a>
+
+          <a class="nav-item" href="surgery.html">
+            <span class="icon">🩺</span>
+            <span>Surgery</span>
+          </a>
+
+          <a class="nav-item" href="pharmacy.html">
+            <span class="icon">💊</span>
+            <span>Pharmacy</span>
+          </a>
+
+          <a class="nav-item" href="billing.html">
+            <span class="icon">💰</span>
+            <span>Billing</span>
+          </a>
+
+          <a class="nav-item" href="inventory.html">
+            <span class="icon">📦</span>
+            <span>Inventory</span>
+          </a>
+
+          <a class="nav-item" href="hr.html">
+            <span class="icon">🧑‍💼</span>
+            <span>HR & Staff</span>
+          </a>
+
+          <a class="nav-item" href="emergency.html">
+            <span class="icon">🚨</span>
+            <span>Emergency</span>
+          </a>
+
+          <a class="nav-item" href="settings.html">
+            <span class="icon">⚙️</span>
+            <span>Settings</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span>© 2025 – AFGOI HMS</span>
+        <span>All Rights Reserved.</span>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-title">Laboratory</div>
+          <div class="topbar-subtitle">
+            Manage lab tests, samples, turnaround time & results.
+          </div>
+        </div>
+        <div class="topbar-center">
+          <input class="search-input" id="globalSearch" placeholder="Quick search by patient, test or lab ID…" />
+        </div>
+        <div class="topbar-right">
+          <span class="status-pill">System Status: Online</span>
+          <div class="user-chip">
+            <div class="user-avatar">AD</div>
+            <div class="user-meta">
+              <span class="user-name">Admin – AFGOI</span>
+              <span class="user-role">Super Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <section class="content">
+        <div class="content-header">
+          <div class="content-title-block">
+            <h1 class="content-title">Laboratory Orders</h1>
+            <p class="content-subtitle">
+              Filter by test type, priority or status. (Front-end demo – later will connect to AFGOI HMS lab module.)
+            </p>
+          </div>
+          <div class="content-actions">
+            <button class="btn btn-ghost">Today</button>
+            <button class="btn btn-ghost">This Week</button>
+            <button class="btn btn-primary">+ New Lab Order</button>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card" style="background:#EEF2FF;border-radius:0.8rem;border:1px solid rgba(148,163,184,0.5);padding:0.9rem 1rem;margin-bottom:1rem;">
+          <div class="filters-row">
+            <select id="filterTestType" class="select">
+              <option value="all">All Test Types</option>
+              <option value="Blood">Blood Tests</option>
+              <option value="Biochemistry">Biochemistry</option>
+              <option value="Microbiology">Microbiology</option>
+              <option value="Imaging">Imaging</option>
+            </select>
+
+            <select id="filterPriority" class="select">
+              <option value="all">All Priorities</option>
+              <option value="Routine">Routine</option>
+              <option value="Urgent">Urgent</option>
+              <option value="Stat">STAT</option>
+            </select>
+
+            <select id="filterStatus" class="select">
+              <option value="all">All Status</option>
+              <option value="Pending">Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+
+            <input
+              id="filterSearch"
+              class="search-input"
+              style="max-width:260px;"
+              placeholder="Search by patient or lab ID…"
+            />
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+          <div class="card-small">
+            <div class="card-small-label">Total Tests Today</div>
+            <div class="card-small-value" id="statTotal">0</div>
+          </div>
+          <div class="card-small">
+            <div class="card-small-label">Pending</div>
+            <div class="card-small-value" id="statPending">0</div>
+          </div>
+          <div class="card-small">
+            <div class="card-small-label">In Progress</div>
+            <div class="card-small-value" id="statInProgress">0</div>
+          </div>
+          <div class="card-small">
+            <div class="card-small-label">Completed Today</div>
+            <div class="card-small-value" id="statCompleted">0</div>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Lab ID</th>
+                <th>Patient</th>
+                <th>Test</th>
+                <th>Type</th>
+                <th>Priority</th>
+                <th>Collected</th>
+                <th>Status</th>
+                <th>Result Time</th>
+              </tr>
+            </thead>
+            <tbody id="labTableBody">
+              <!-- rows from JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Demo lab data
+    const labOrders = [
+      {
+        id: "LAB-2025-001",
+        patient: "Ahmed Ali (#P-1021)",
+        test: "CBC + ESR",
+        type: "Blood",
+        priority: "Routine",
+        collected: "09:10",
+        status: "Completed",
+        resultTime: "09:35"
+      },
+      {
+        id: "LAB-2025-002",
+        patient: "Hodan Ismail (#P-1033)",
+        test: "Liver Function Test",
+        type: "Biochemistry",
+        priority: "Urgent",
+        collected: "09:25",
+        status: "In Progress",
+        resultTime: "—"
+      },
+      {
+        id: "LAB-2025-003",
+        patient: "Yasin Noor (#P-0998)",
+        test: "Blood Culture",
+        type: "Microbiology",
+        priority: "Routine",
+        collected: "08:40",
+        status: "Pending",
+        resultTime: "—"
+      },
+      {
+        id: "LAB-2025-004",
+        patient: "Fartun Omar (#P-1005)",
+        test: "Chest X-Ray",
+        type: "Imaging",
+        priority: "Stat",
+        collected: "09:32",
+        status: "Completed",
+        resultTime: "09:50"
+      },
+      {
+        id: "LAB-2025-005",
+        patient: "Abdullahi Mohamed (#P-1018)",
+        test: "Renal Profile",
+        type: "Biochemistry",
+        priority: "Routine",
+        collected: "08:20",
+        status: "Rejected",
+        resultTime: "—"
+      }
+    ];
+
+    const filterTestType = document.getElementById("filterTestType");
+    const filterPriority = document.getElementById("filterPriority");
+    const filterStatus = document.getElementById("filterStatus");
+    const filterSearch = document.getElementById("filterSearch");
+    const globalSearch = document.getElementById("globalSearch");
+    const tableBody = document.getElementById("labTableBody");
+
+    const statTotal = document.getElementById("statTotal");
+    const statPending = document.getElementById("statPending");
+    const statInProgress = document.getElementById("statInProgress");
+    const statCompleted = document.getElementById("statCompleted");
+
+    function getStatusClass(status) {
+      switch (status) {
+        case "Completed":
+          return "pill pill-green";
+        case "In Progress":
+          return "pill pill-blue";
+        case "Pending":
+          return "pill pill-yellow";
+        case "Rejected":
+          return "pill pill-red";
+        default:
+          return "pill";
+      }
+    }
+
+    function applyFilters() {
+      const typeValue = filterTestType.value;
+      const priorityValue = filterPriority.value;
+      const statusValue = filterStatus.value;
+      const searchValue = (filterSearch.value || globalSearch.value || "").toLowerCase().trim();
+
+      let filtered = labOrders.filter(order => {
+        const matchType = typeValue === "all" || order.type === typeValue;
+        const matchPriority = priorityValue === "all" || order.priority === priorityValue;
+        const matchStatus = statusValue === "all" || order.status === statusValue;
+
+        const text = (order.id + " " + order.patient + " " + order.test).toLowerCase();
+        const matchSearch = !searchValue || text.includes(searchValue);
+
+        return matchType && matchPriority && matchStatus && matchSearch;
+      });
+
+      renderTable(filtered);
+      updateStats(filtered);
+    }
+
+    function renderTable(rows) {
+      if (rows.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td class="text-center" colspan="8">
+              No laboratory orders found for selected filters.
+            </td>
+          </tr>`;
+        return;
+      }
+
+      tableBody.innerHTML = rows
+        .map(order => `
+          <tr>
+            <td>${order.id}</td>
+            <td>${order.patient}</td>
+            <td>${order.test}</td>
+            <td>${order.type}</td>
+            <td>${order.priority}</td>
+            <td>${order.collected}</td>
+            <td><span class="${getStatusClass(order.status)}">${order.status}</span></td>
+            <td>${order.resultTime}</td>
+          </tr>
+        `)
+        .join("");
+    }
+
+    function updateStats(rows) {
+      statTotal.textContent = rows.length;
+      statPending.textContent = rows.filter(o => o.status === "Pending").length;
+      statInProgress.textContent = rows.filter(o => o.status === "In Progress").length;
+      statCompleted.textContent = rows.filter(o => o.status === "Completed").length;
+    }
+
+    // Events
+    [filterTestType, filterPriority, filterStatus].forEach(el => {
+      el.addEventListener("change", applyFilters);
+    });
+
+    [filterSearch, globalSearch].forEach(el => {
+      el.addEventListener("input", applyFilters);
+    });
+
+    // Initial render
+    renderTable(labOrders);
+    updateStats(labOrders);
+  </script>
+</body>
+</html>
