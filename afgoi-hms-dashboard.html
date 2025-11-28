@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AFGOI HOSPITAL – HMS Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --bg: #F3F4F6;
+      --card-bg: #FFFFFF;
+      --text-main: #111827;
+      --text-muted: #6B7280;
+      --border-soft: #E5E7EB;
+      --accent-green: #10B981;
+      --danger: #EF4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+    }
+
+    .layout {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: #0B1120;
+      color: #E5E7EB;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #38BDF8, #2563EB);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: white;
+    }
+
+    .sidebar-title {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .sidebar-title-main {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .sidebar-title-sub {
+      font-size: 0.75rem;
+      color: #9CA3AF;
+    }
+
+    .sidebar-nav {
+      padding: 1rem 0.5rem 1.25rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .nav-section-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6B7280;
+      padding: 0.25rem 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.55rem 1rem;
+      margin: 0.15rem 0.5rem;
+      border-radius: 0.6rem;
+      font-size: 0.86rem;
+      color: #E5E7EB;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .nav-item span.icon {
+      font-size: 1rem;
+      width: 1.4rem;
+      text-align: center;
+    }
+
+    .nav-item:hover {
+      background: rgba(37, 99, 235, 0.12);
+    }
+
+    .nav-item.active {
+      background: rgba(37, 99, 235, 0.18);
+      border-left-color: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .sidebar-footer {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.3);
+      font-size: 0.75rem;
+      color: #6B7280;
+    }
+
+    .sidebar-footer span {
+      display: block;
+    }
+
+    /* Main area */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* Top bar */
+    .topbar {
+      height: 64px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      gap: 1rem;
+    }
+
+    .topbar-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .topbar-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .topbar-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .topbar-center {
+      flex: 1;
+      max-width: 420px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .status-pill {
+      font-size: 0.78rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.06);
+      color: var(--accent-green);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #38BDF8, #2563EB);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .user-meta {
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.05rem;
+    }
+
+    .user-name {
+      font-weight: 500;
+    }
+
+    .user-role {
+      color: var(--text-muted);
+    }
+
+    /* Content */
+    .content {
+      flex: 1;
+      padding: 1.25rem 1.5rem 1.5rem;
+      overflow-y: auto;
+    }
+
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1rem;
+      gap: 1rem;
+    }
+
+    .content-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .content-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .content-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .content-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      background: #FFFFFF;
+      color: var(--text-main);
+      border-color: var(--border-soft);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary-dark);
+    }
+
+    .btn-ghost {
+      background: transparent;
+    }
+
+    .btn:active {
+      transform: translateY(0.5px);
+    }
+
+    /* Cards grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.9rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 0.8rem;
+      border: 1px solid var(--border-soft);
+      padding: 0.9rem;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.45rem;
+    }
+
+    .card-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .card-stat {
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin-bottom: 0.15rem;
+    }
+
+    .card-footer {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .trend-up {
+      color: var(--accent-green);
+      font-weight: 500;
+    }
+
+    .trend-down {
+      color: var(--danger);
+      font-weight: 500;
+    }
+
+    .badge-pill {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      color: var(--text-muted);
+    }
+
+    /* Two column section */
+    .two-col {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .chart-placeholder {
+      height: 220px;
+      border-radius: 0.7rem;
+      border: 1px dashed var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .activity-list {
+      list-style: none;
+      font-size: 0.8rem;
+    }
+
+    .activity-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .activity-main {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .activity-title {
+      font-weight: 500;
+    }
+
+    .activity-meta {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    .activity-time {
+      white-space: nowrap;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Pharmacy table */
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 0.7rem;
+      border: 1px solid var(--border-soft);
+      background: #FFFFFF;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      min-width: 720px;
+    }
+
+    thead {
+      background: #F9FAFB;
+    }
+
+    th, td {
+      padding: 0.55rem 0.7rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    tr:hover td {
+      background: #F9FAFB;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 500;
+    }
+
+    .pill-green {
+      background: rgba(16, 185, 129, 0.08);
+      color: var(--accent-green);
+    }
+
+    .pill-blue {
+      background: rgba(37, 99, 235, 0.08);
+      color: var(--primary-dark);
+    }
+
+    .pill-yellow {
+      background: rgba(245, 158, 11, 0.1);
+      color: #B45309;
+    }
+
+    .pill-red {
+      background: rgba(239, 68, 68, 0.08);
+      color: var(--danger);
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        width: 220px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        height: auto;
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+      }
+
+      .sidebar-header {
+        display: none;
+      }
+
+      .sidebar-nav {
+        display: flex;
+        padding: 0.4rem;
+      }
+
+      .nav-item {
+        margin: 0.15rem;
+        padding: 0.4rem 0.6rem;
+        border-radius: 999px;
+      }
+
+      .sidebar-footer {
+        display: none;
+      }
+
+      .topbar {
+        padding: 0.6rem 0.9rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .content {
+        padding: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar-center {
+        display: none;
+      }
+
+      .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      table {
+        min-width: 580px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-circle">AH</div>
+        <div class="sidebar-title">
+          <span class="sidebar-title-main">AFGOI HOSPITAL</span>
+          <span class="sidebar-title-sub">Hospital Management System</span>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div style="width:100%;">
+          <div class="nav-section-label">Main Modules</div>
+          <div class="nav-item active">
+            <span class="icon">🏠</span>
+            <span>Dashboard (Overview)</span>
+          </div>
+          <div class="nav-item">
+            <span class="icon">💊</span>
+            <span>Pharmacy</span>
+          </div>
+          <div class="nav-item">
+            <span class="icon">👨‍⚕️</span>
+            <span>Doctors</span>
+          </div>
+          <div class="nav-item">
+            <span class="icon">👩‍⚕️</span>
+            <span>Nurses</span>
+          </div>
+          <div class="nav-item">
+            <span class="icon">🧑‍🦽</span>
+            <span>Patients</span>
+          </div>
+          <div class="nav-item">
+            <span class="icon">🧪</span>
+            <span>Laboratory</span>
+          </div>
+          <div class="nav-item">
+            <span class="icon">🩺</span>
+            <span>Surgery</span>
+          </div>
+          <div class="nav-item">
+            <span class="icon">✅</span>
+            <span>Discharge</span>
+          </div>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <span>© 2025 – AFGOI HMS</span>
+        <span>All Rights Reserved.</span>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-title">AFGOI HOSPITAL – Dashboard</div>
+          <div class="topbar-subtitle">Today overview • Admissions, pharmacy & operations in one view</div>
+        </div>
+        <div class="topbar-center">
+          <input class="search-input" placeholder="Search patients, doctors, prescriptions…" />
+        </div>
+        <div class="topbar-right">
+          <span class="status-pill">System Status: Online</span>
+          <div class="user-chip">
+            <div class="user-avatar">AD</div>
+            <div class="user-meta">
+              <span class="user-name">Admin – AFGOI</span>
+              <span class="user-role">Super Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <section class="content">
+        <!-- Header row -->
+        <div class="content-header">
+          <div class="content-title-block">
+            <h1 class="content-title">Hospital Overview</h1>
+            <p class="content-subtitle">
+              Quick snapshot of patients, beds, operations & pharmacy prescriptions.
+            </p>
+          </div>
+          <div class="content-actions">
+            <button class="btn btn-ghost">Today</button>
+            <button class="btn btn-ghost">This Week</button>
+            <button class="btn btn-primary">+ New Admission</button>
+          </div>
+        </div>
+
+        <!-- Stats cards -->
+        <div class="stats-grid">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Total Patients</span>
+              <span class="badge-pill">Live</span>
+            </div>
+            <div class="card-stat">128</div>
+            <div class="card-footer"><span class="trend-up">▲ +12</span> vs yesterday</div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Today Appointments</span>
+              <span class="badge-pill">Outpatient</span>
+            </div>
+            <div class="card-stat">46</div>
+            <div class="card-footer"><span class="trend-up">▲ +8</span> confirmed</div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Inpatients</span>
+              <span class="badge-pill">Admitted</span>
+            </div>
+            <div class="card-stat">72</div>
+            <div class="card-footer">ICU: 9 • Surgery ward: 18</div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Available Beds</span>
+              <span class="badge-pill">Capacity</span>
+            </div>
+            <div class="card-stat">34</div>
+            <div class="card-footer"><span class="trend-down">▼ -4</span> vs last week</div>
+          </div>
+        </div>
+
+        <!-- Two-column: chart + activity -->
+        <div class="two-col">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Admissions vs Discharges</span>
+              <span class="badge-pill">Last 7 days</span>
+            </div>
+            <div class="chart-placeholder">
+              Chart placeholder (connect to your chart library / API)
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Recent Activity</span>
+              <span class="badge-pill">Live feed</span>
+            </div>
+            <ul class="activity-list">
+              <li class="activity-item">
+                <div class="activity-main">
+                  <span class="activity-title">New surgery scheduled</span>
+                  <span class="activity-meta">Patient: #P-1043 • Dr. Hassan • OR-2</span>
+                </div>
+                <span class="activity-time">08:23</span>
+              </li>
+              <li class="activity-item">
+                <div class="activity-main">
+                  <span class="activity-title">Prescription sent to pharmacy</span>
+                  <span class="activity-meta">Amoxicillin 500mg • 3x daily • 7 days</span>
+                </div>
+                <span class="activity-time">08:05</span>
+              </li>
+              <li class="activity-item">
+                <div class="activity-main">
+                  <span class="activity-title">Lab results ready</span>
+                  <span class="activity-meta">CBC • Patient #P-0987 • Ward 3B</span>
+                </div>
+                <span class="activity-time">07:58</span>
+              </li>
+              <li class="activity-item">
+                <div class="activity-main">
+                  <span class="activity-title">Patient discharged</span>
+                  <span class="activity-meta">#P-0912 • Length of stay: 3 days</span>
+                </div>
+                <span class="activity-time">07:34</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Pharmacy section -->
+        <div style="margin-top: 0.5rem;">
+          <div class="section-title">Pharmacy – Doctor Prescriptions</div>
+          <div class="section-subtitle">
+            Live list of prescriptions sent from doctors to pharmacy. Each row shows patient, medicine, dosage & frequency.
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Prescription ID</th>
+                  <th>Patient</th>
+                  <th>Doctor</th>
+                  <th>Medicine</th>
+                  <th>Dosage</th>
+                  <th>Frequency</th>
+                  <th>Duration</th>
+                  <th>Status</th>
+                  <th class="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#RX-2025-001</td>
+                  <td>Ahmed Ali (#P-1021)</td>
+                  <td>Dr. Mohamed</td>
+                  <td>Paracetamol 500mg</td>
+                  <td>1 tablet</td>
+                  <td>Every 8 hours</td>
+                  <td>3 days</td>
+                  <td><span class="pill pill-green">Dispensed</span></td>
+                  <td class="text-right">
+                    <span class="pill pill-blue">View</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#RX-2025-002</td>
+                  <td>Hodan Ismail (#P-1033)</td>
+                  <td>Dr. Asha</td>
+                  <td>Amoxicillin 500mg</td>
+                  <td>1 capsule</td>
+                  <td>3x daily</td>
+                  <td>7 days</td>
+                  <td><span class="pill pill-yellow">Pending</span></td>
+                  <td class="text-right">
+                    <span class="pill pill-blue">Mark as Dispensed</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#RX-2025-003</td>
+                  <td>Yasin Noor (#P-0998)</td>
+                  <td>Dr. Hassan</td>
+                  <td>Insulin (Short-acting)</td>
+                  <td>10 units</td>
+                  <td>Before meals</td>
+                  <td>On-going</td>
+                  <td><span class="pill pill-green">Dispensed</span></td>
+                  <td class="text-right">
+                    <span class="pill pill-blue">View</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#RX-2025-004</td>
+                  <td>Fartun Omar (#P-1005)</td>
+                  <td>Dr. Abdi</td>
+                  <td>Omeprazole 20mg</td>
+                  <td>1 capsule</td>
+                  <td>Once daily</td>
+                  <td>14 days</td>
+                  <td><span class="pill pill-red">On Hold</span></td>
+                  <td class="text-right">
+                    <span class="pill pill-blue">Resolve</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+</body>
+</html>
