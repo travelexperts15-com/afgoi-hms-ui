@@ -8,7 +8,7 @@
     :root {
       --primary: #2563EB;
       --primary-dark: #1D4ED8;
-      --bg: #F3F4F6;
+      --bg: #778fd7;
       --card-bg: #FFFFFF;
       --text-main: #111827;
       --text-muted: #6B7280;
@@ -109,6 +109,7 @@
       cursor: pointer;
       border-left: 3px solid transparent;
       transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+      text-decoration: none;
     }
 
     .nav-item span.icon {
@@ -589,43 +590,100 @@
           <span class="sidebar-title-sub">Hospital Management System</span>
         </div>
       </div>
+
       <nav class="sidebar-nav">
         <div style="width:100%;">
           <div class="nav-section-label">Main Modules</div>
-          <div class="nav-item active">
+
+          <!-- Dashboard (this page) -->
+          <a class="nav-item active" href="afgoi-hms-dashboard.html">
             <span class="icon">🏠</span>
             <span>Dashboard (Overview)</span>
-          </div>
-          <div class="nav-item">
-            <span class="icon">💊</span>
-            <span>Pharmacy</span>
-          </div>
-          <div class="nav-item">
+          </a>
+
+          <!-- Core clinical modules -->
+          <a class="nav-item" href="doctors.html">
             <span class="icon">👨‍⚕️</span>
             <span>Doctors</span>
-          </div>
-          <div class="nav-item">
+          </a>
+
+          <a class="nav-item" href="nurses.html">
             <span class="icon">👩‍⚕️</span>
             <span>Nurses</span>
-          </div>
-          <div class="nav-item">
+          </a>
+
+          <a class="nav-item" href="patients.html">
             <span class="icon">🧑‍🦽</span>
             <span>Patients</span>
-          </div>
-          <div class="nav-item">
+          </a>
+
+          <a class="nav-item" href="admissions.html">
+            <span class="icon">📥</span>
+            <span>Admissions</span>
+          </a>
+
+          <a class="nav-item" href="opd.html">
+            <span class="icon">🏥</span>
+            <span>OPD</span>
+          </a>
+
+          <!-- Diagnostics -->
+          <a class="nav-item" href="laboratory.html">
             <span class="icon">🧪</span>
             <span>Laboratory</span>
-          </div>
-          <div class="nav-item">
+          </a>
+
+          <a class="nav-item" href="radiology.html">
+            <span class="icon">🖥️</span>
+            <span>Radiology / X-Ray</span>
+          </a>
+
+          <!-- Treatment & pharmacy -->
+          <a class="nav-item" href="surgery.html">
             <span class="icon">🩺</span>
             <span>Surgery</span>
-          </div>
-          <div class="nav-item">
+          </a>
+
+          <a class="nav-item" href="pharmacy.html">
+            <span class="icon">💊</span>
+            <span>Pharmacy</span>
+          </a>
+
+          <!-- Support & finance -->
+          <a class="nav-item" href="billing.html">
+            <span class="icon">💰</span>
+            <span>Billing</span>
+          </a>
+
+          <a class="nav-item" href="inventory.html">
+            <span class="icon">📦</span>
+            <span>Inventory</span>
+          </a>
+
+          <a class="nav-item" href="hr.html">
+            <span class="icon">🧑‍💼</span>
+            <span>HR & Staff</span>
+          </a>
+
+          <!-- Emergency & discharge -->
+          <a class="nav-item" href="emergency.html">
+            <span class="icon">🚨</span>
+            <span>Emergency</span>
+          </a>
+
+          <a class="nav-item" href="discharge.html">
             <span class="icon">✅</span>
             <span>Discharge</span>
-          </div>
+          </a>
+
+          <!-- System -->
+          <a class="nav-item" href="settings.html">
+            <span class="icon">⚙️</span>
+            <span>Settings</span>
+          </a>
         </div>
       </nav>
+
       <div class="sidebar-footer">
         <span>© 2025 – AFGOI HMS</span>
         <span>All Rights Reserved.</span>
@@ -638,7 +696,9 @@
       <header class="topbar">
         <div class="topbar-left">
           <div class="topbar-title">AFGOI HOSPITAL – Dashboard</div>
-          <div class="topbar-subtitle">Today overview • Admissions, pharmacy & operations in one view</div>
+          <div class="topbar-subtitle">
+            Today overview • Admissions, pharmacy & operations in one view
+          </div>
         </div>
         <div class="topbar-center">
           <input class="search-input" placeholder="Search patients, doctors, prescriptions…" />
@@ -680,7 +740,9 @@
               <span class="badge-pill">Live</span>
             </div>
             <div class="card-stat">128</div>
-            <div class="card-footer"><span class="trend-up">▲ +12</span> vs yesterday</div>
+            <div class="card-footer">
+              <span class="trend-up">▲ +12</span> vs yesterday
+            </div>
           </div>
 
           <div class="card">
@@ -689,7 +751,9 @@
               <span class="badge-pill">Outpatient</span>
             </div>
             <div class="card-stat">46</div>
-            <div class="card-footer"><span class="trend-up">▲ +8</span> confirmed</div>
+            <div class="card-footer">
+              <span class="trend-up">▲ +8</span> confirmed
+            </div>
           </div>
 
           <div class="card">
@@ -698,7 +762,9 @@
               <span class="badge-pill">Admitted</span>
             </div>
             <div class="card-stat">72</div>
-            <div class="card-footer">ICU: 9 • Surgery ward: 18</div>
+            <div class="card-footer">
+              ICU: 9 • Surgery ward: 18
+            </div>
           </div>
 
           <div class="card">
@@ -707,7 +773,9 @@
               <span class="badge-pill">Capacity</span>
             </div>
             <div class="card-stat">34</div>
-            <div class="card-footer"><span class="trend-down">▼ -4</span> vs last week</div>
+            <div class="card-footer">
+              <span class="trend-down">▼ -4</span> vs last week
+            </div>
           </div>
         </div>
 
@@ -732,28 +800,36 @@
               <li class="activity-item">
                 <div class="activity-main">
                   <span class="activity-title">New surgery scheduled</span>
-                  <span class="activity-meta">Patient: #P-1043 • Dr. Hassan • OR-2</span>
+                  <span class="activity-meta">
+                    Patient: #P-1043 • Dr. Hassan • OR-2
+                  </span>
                 </div>
                 <span class="activity-time">08:23</span>
               </li>
               <li class="activity-item">
                 <div class="activity-main">
                   <span class="activity-title">Prescription sent to pharmacy</span>
-                  <span class="activity-meta">Amoxicillin 500mg • 3x daily • 7 days</span>
+                  <span class="activity-meta">
+                    Amoxicillin 500mg • 3x daily • 7 days
+                  </span>
                 </div>
                 <span class="activity-time">08:05</span>
               </li>
               <li class="activity-item">
                 <div class="activity-main">
                   <span class="activity-title">Lab results ready</span>
-                  <span class="activity-meta">CBC • Patient #P-0987 • Ward 3B</span>
+                  <span class="activity-meta">
+                    CBC • Patient #P-0987 • Ward 3B
+                  </span>
                 </div>
                 <span class="activity-time">07:58</span>
               </li>
               <li class="activity-item">
                 <div class="activity-main">
                   <span class="activity-title">Patient discharged</span>
-                  <span class="activity-meta">#P-0912 • Length of stay: 3 days</span>
+                  <span class="activity-meta">
+                    #P-0912 • Length of stay: 3 days
+                  </span>
                 </div>
                 <span class="activity-time">07:34</span>
               </li>
@@ -765,7 +841,8 @@
         <div style="margin-top: 0.5rem;">
           <div class="section-title">Pharmacy – Doctor Prescriptions</div>
           <div class="section-subtitle">
-            Live list of prescriptions sent from doctors to pharmacy. Each row shows patient, medicine, dosage & frequency.
+            Live list of prescriptions sent from doctors to pharmacy. Each row
+            shows patient, medicine, dosage & frequency.
           </div>
 
           <div class="table-wrapper">
