@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AFGOI HOSPITAL 🏥 Admissions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg: #778fd7; /* same background as dashboard */
+      --card-bg: #ffffff;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --border-soft: #e5e7eb;
+      --accent-green: #10b981;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+    }
+
+    .layout {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: #0b1120;
+      color: #e5e7eb;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #38bdf8, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: white;
+    }
+
+    .sidebar-title {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .sidebar-title-main {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .sidebar-title-sub {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    .sidebar-nav {
+      padding: 1rem 0.5rem 1.25rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .nav-section-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6b7280;
+      padding: 0.25rem 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.55rem 1rem;
+      margin: 0.15rem 0.5rem;
+      border-radius: 0.6rem;
+      font-size: 0.86rem;
+      color: #e5e7eb;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+      text-decoration: none;
+    }
+
+    .nav-item span.icon {
+      font-size: 1rem;
+      width: 1.4rem;
+      text-align: center;
+    }
+
+    .nav-item:hover {
+      background: rgba(37, 99, 235, 0.12);
+    }
+
+    .nav-item.active {
+      background: rgba(37, 99, 235, 0.18);
+      border-left-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .sidebar-footer {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.3);
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+
+    .sidebar-footer span {
+      display: block;
+    }
+
+    /* Main area */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* Top bar */
+    .topbar {
+      height: 64px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      gap: 1rem;
+    }
+
+    .topbar-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .topbar-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .topbar-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .topbar-center {
+      flex: 1;
+      max-width: 420px;
+    }
+
+    .search-input-top {
+      width: 100%;
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .search-input-top:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .status-pill {
+      font-size: 0.78rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.06);
+      color: var(--accent-green);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .user-meta {
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.05rem;
+    }
+
+    .user-name {
+      font-weight: 500;
+    }
+
+    .user-role {
+      color: var(--text-muted);
+    }
+
+    /* Content */
+    .content {
+      flex: 1;
+      padding: 1.25rem 1.5rem 1.5rem;
+      overflow-y: auto;
+    }
+
+    .content-header {
+      margin-bottom: 1rem;
+    }
+
+    .content-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .content-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Filters card */
+    .filters-card {
+      margin-top: 1rem;
+      background: var(--card-bg);
+      border-radius: 0.9rem;
+      border: 1px solid var(--border-soft);
+      padding: 0.85rem;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+    }
+
+    .select {
+      min-width: 160px;
+      padding: 0.42rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 0.85rem;
+      background: #ffffff;
+      outline: none;
+    }
+
+    .select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 200px;
+      padding: 0.42rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-primary {
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid var(--primary-dark);
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    /* Admissions table */
+    .card-table {
+      margin-top: 1rem;
+      background: var(--card-bg);
+      border-radius: 0.9rem;
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      padding: 0.85rem;
+    }
+
+    .card-table-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .card-table-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 0.7rem;
+      border: 1px solid var(--border-soft);
+      background: #ffffff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      min-width: 820px;
+    }
+
+    thead {
+      background: #f9fafb;
+    }
+
+    th,
+    td {
+      padding: 0.55rem 0.7rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    tr:hover td {
+      background: #f9fafb;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 500;
+    }
+
+    .pill-green {
+      background: rgba(16, 185, 129, 0.08);
+      color: var(--accent-green);
+    }
+
+    .pill-yellow {
+      background: rgba(245, 158, 11, 0.1);
+      color: #b45309;
+    }
+
+    .pill-red {
+      background: rgba(239, 68, 68, 0.08);
+      color: var(--danger);
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    @media (max-width: 1024px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        overflow-x: auto;
+      }
+
+      .sidebar-header {
+        display: none;
+      }
+
+      .sidebar-nav {
+        display: flex;
+        padding: 0.4rem;
+      }
+
+      .nav-item {
+        margin: 0.15rem;
+        padding: 0.4rem 0.6rem;
+        border-radius: 999px;
+      }
+
+      .sidebar-footer {
+        display: none;
+      }
+
+      .content {
+        padding: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .topbar-center {
+        display: none;
+      }
+
+      .content-header {
+        margin-bottom: 0.75rem;
+      }
+
+      table {
+        min-width: 720px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-circle">AH</div>
+        <div class="sidebar-title">
+          <span class="sidebar-title-main">AFGOI HOSPITAL</span>
+          <span class="sidebar-title-sub">Hospital Management System</span>
+        </div>
+      </div>
+
+      <!-- NAV (same as other pages, Admissions active) -->
+      <nav class="sidebar-nav">
+        <div style="width: 100%;">
+          <div class="nav-section-label">Main Modules</div>
+
+          <a class="nav-item" href="afgoi-hms-dashboard.html">
+            <span class="icon">🏠</span>
+            <span>Dashboard (Overview)</span>
+          </a>
+
+          <a class="nav-item" href="doctors.html">
+            <span class="icon">👨‍⚕️</span>
+            <span>Doctors</span>
+          </a>
+
+          <a class="nav-item" href="nurses.html">
+            <span class="icon">👩‍⚕️</span>
+            <span>Nurses</span>
+          </a>
+
+          <a class="nav-item" href="patients.html">
+            <span class="icon">🧑‍🦽</span>
+            <span>Patients</span>
+          </a>
+
+          <a class="nav-item active" href="admissions.html">
+            <span class="icon">📥</span>
+            <span>Admissions</span>
+          </a>
+
+          <a class="nav-item" href="opd.html">
+            <span class="icon">🏥</span>
+            <span>OPD</span>
+          </a>
+
+          <a class="nav-item" href="laboratory.html">
+            <span class="icon">🧪</span>
+            <span>Laboratory</span>
+          </a>
+
+          <a class="nav-item" href="radiology.html">
+            <span class="icon">🖥️</span>
+            <span>Radiology / X-Ray</span>
+          </a>
+
+          <a class="nav-item" href="surgery.html">
+            <span class="icon">🩺</span>
+            <span>Surgery</span>
+          </a>
+
+          <a class="nav-item" href="pharmacy.html">
+            <span class="icon">💊</span>
+            <span>Pharmacy</span>
+          </a>
+
+          <a class="nav-item" href="billing.html">
+            <span class="icon">💰</span>
+            <span>Billing</span>
+          </a>
+
+          <a class="nav-item" href="inventory.html">
+            <span class="icon">📦</span>
+            <span>Inventory</span>
+          </a>
+
+          <a class="nav-item" href="hr.html">
+            <span class="icon">🧑‍💼</span>
+            <span>HR & Staff</span>
+          </a>
+
+          <a class="nav-item" href="emergency.html">
+            <span class="icon">🚨</span>
+            <span>Emergency</span>
+          </a>
+
+          <a class="nav-item" href="discharge.html">
+            <span class="icon">✅</span>
+            <span>Discharge</span>
+          </a>
+
+          <a class="nav-item" href="settings.html">
+            <span class="icon">⚙️</span>
+            <span>Settings</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span>© 2025 – AFGOI HMS</span>
+        <span>All Rights Reserved.</span>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-title">Admissions</div>
+          <div class="topbar-subtitle">
+            Manage new admissions, bed allocation & current inpatients.
+          </div>
+        </div>
+        <div class="topbar-center">
+          <input
+            class="search-input-top"
+            placeholder="Quick search by patient name, ID or doctor…"
+          />
+        </div>
+        <div class="topbar-right">
+          <span class="status-pill">System Status: Online</span>
+          <div class="user-chip">
+            <div class="user-avatar">AD</div>
+            <div class="user-meta">
+              <span class="user-name">Admin – AFGOI</span>
+              <span class="user-role">Super Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <section class="content">
+        <div class="content-header">
+          <h1 class="content-title">Admissions List</h1>
+          <p class="content-subtitle">
+            Filter by ward, admission status or search patient name / ID. (Front-end demo.)
+          </p>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-card">
+          <select id="wardFilter" class="select">
+            <option value="all">All Wards</option>
+            <option value="general">General</option>
+            <option value="surgery">Surgery</option>
+            <option value="icu">ICU</option>
+            <option value="maternity">Maternity</option>
+            <option value="opd">OPD</option>
+          </select>
+
+          <select id="statusFilter" class="select">
+            <option value="all">All Status</option>
+            <option value="admitted">Admitted</option>
+            <option value="pending">Pending</option>
+            <option value="discharged">Discharged</option>
+          </select>
+
+          <input
+            id="searchInput"
+            class="search-input"
+            type="text"
+            placeholder="Search by patient name or ID…"
+          />
+
+          <button class="btn-primary" type="button">
+            + New Admission
+          </button>
+        </div>
+
+        <!-- Table -->
+        <div class="card-table">
+          <div class="card-table-title">Current Admissions</div>
+          <div class="card-table-subtitle">
+            Demo data – later will connect to real AFGOI HMS database.
+          </div>
+
+          <div class="table-wrapper">
+            <table id="admissionsTable">
+              <thead>
+                <tr>
+                  <th>Admission ID</th>
+                  <th>Patient</th>
+                  <th>Age</th>
+                  <th>Ward</th>
+                  <th>Doctor</th>
+                  <th>Reason</th>
+                  <th>Status</th>
+                  <th>Admission Date</th>
+                  <th>Bed</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  data-ward="general"
+                  data-status="admitted"
+                  data-search="AD-1001 ahmed ali"
+                >
+                  <td>AD-1001</td>
+                  <td>Ahmed Ali (#P-1021)</td>
+                  <td>45</td>
+                  <td>General Ward</td>
+                  <td>Dr. Mohamed</td>
+                  <td>Pneumonia</td>
+                  <td><span class="pill pill-green">Admitted</span></td>
+                  <td>28 Nov 2025</td>
+                  <td>G-12</td>
+                </tr>
+
+                <tr
+                  data-ward="surgery"
+                  data-status="pending"
+                  data-search="AD-1002 hodan ismail"
+                >
+                  <td>AD-1002</td>
+                  <td>Hodan Ismail (#P-1033)</td>
+                  <td>32</td>
+                  <td>Surgery Ward</td>
+                  <td>Dr. Abdi</td>
+                  <td>Appendicitis – scheduled surgery</td>
+                  <td><span class="pill pill-yellow">Pending</span></td>
+                  <td>29 Nov 2025</td>
+                  <td>S-05</td>
+                </tr>
+
+                <tr
+                  data-ward="icu"
+                  data-status="admitted"
+                  data-search="AD-1003 yasin noor"
+                >
+                  <td>AD-1003</td>
+                  <td>Yasin Noor (#P-0998)</td>
+                  <td>60</td>
+                  <td>ICU</td>
+                  <td>Dr. Hassan</td>
+                  <td>Post-operative monitoring</td>
+                  <td><span class="pill pill-green">Admitted</span></td>
+                  <td>27 Nov 2025</td>
+                  <td>ICU-02</td>
+                </tr>
+
+                <tr
+                  data-ward="maternity"
+                  data-status="discharged"
+                  data-search="AD-1004 fartun omar"
+                >
+                  <td>AD-1004</td>
+                  <td>Fartun Omar (#P-1005)</td>
+                  <td>28</td>
+                  <td>Maternity</td>
+                  <td>Dr. Asha</td>
+                  <td>Normal delivery</td>
+                  <td><span class="pill pill-red">Discharged</span></td>
+                  <td>26 Nov 2025</td>
+                  <td>M-08</td>
+                </tr>
+
+                <tr
+                  data-ward="opd"
+                  data-status="pending"
+                  data-search="AD-1005 abdirahman aden"
+                >
+                  <td>AD-1005</td>
+                  <td>Abdirahman Aden (#P-1102)</td>
+                  <td>39</td>
+                  <td>OPD</td>
+                  <td>Dr. Ladan</td>
+                  <td>Chest pain – evaluation</td>
+                  <td><span class="pill pill-yellow">Pending</span></td>
+                  <td>29 Nov 2025</td>
+                  <td>OPD-03</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Simple filtering logic (front-end demo only) -->
+  <script>
+    const wardFilter = document.getElementById("wardFilter");
+    const statusFilter = document.getElementById("statusFilter");
+    const searchInput = document.getElementById("searchInput");
+    const tableBody = document.querySelector("#admissionsTable tbody");
+
+    function filterAdmissions() {
+      const wardValue = wardFilter.value;
+      const statusValue = statusFilter.value;
+      const searchValue = searchInput.value.trim().toLowerCase();
+
+      Array.from(tableBody.rows).forEach((row) => {
+        const rowWard = row.getAttribute("data-ward"); // general, surgery, icu...
+        const rowStatus = row.getAttribute("data-status"); // admitted, pending...
+        const rowSearch = row.getAttribute("data-search"); // combined text
+
+        const wardMatch = wardValue === "all" || rowWard === wardValue;
+        const statusMatch = statusValue === "all" || rowStatus === statusValue;
+        const searchMatch =
+          !searchValue || (rowSearch && rowSearch.includes(searchValue));
+
+        row.style.display = wardMatch && statusMatch && searchMatch ? "" : "none";
+      });
+    }
+
+    wardFilter.addEventListener("change", filterAdmissions);
+    statusFilter.addEventListener("change", filterAdmissions);
+    searchInput.addEventListener("input", filterAdmissions);
+  </script>
+</body>
+</html>
