@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AFGOI HOSPITAL – Surgery & Operating Theatre</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg: #778fd7; /* isla background kii dashboard-ka */
+      --card-bg: #ffffff;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --border-soft: #e5e7eb;
+      --accent-green: #10b981;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+    }
+
+    .layout {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: #0b1120;
+      color: #e5e7eb;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #38bdf8, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: white;
+    }
+
+    .sidebar-title {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .sidebar-title-main {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .sidebar-title-sub {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    .sidebar-nav {
+      padding: 1rem 0.5rem 1.25rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .nav-section-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6b7280;
+      padding: 0.25rem 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.55rem 1rem;
+      margin: 0.15rem 0.5rem;
+      border-radius: 0.6rem;
+      font-size: 0.86rem;
+      color: #e5e7eb;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+      text-decoration: none;
+    }
+
+    .nav-item span.icon {
+      font-size: 1rem;
+      width: 1.4rem;
+      text-align: center;
+    }
+
+    .nav-item:hover {
+      background: rgba(37, 99, 235, 0.12);
+    }
+
+    .nav-item.active {
+      background: rgba(37, 99, 235, 0.18);
+      border-left-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .sidebar-footer {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.3);
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+
+    .sidebar-footer span {
+      display: block;
+    }
+
+    /* Main area */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* Top bar */
+    .topbar {
+      height: 64px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      gap: 1rem;
+    }
+
+    .topbar-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .topbar-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .topbar-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .topbar-center {
+      flex: 1;
+      max-width: 420px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .status-pill {
+      font-size: 0.78rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.06);
+      color: var(--accent-green);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .user-meta {
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.05rem;
+    }
+
+    .user-name {
+      font-weight: 500;
+    }
+
+    .user-role {
+      color: var(--text-muted);
+    }
+
+    /* Content */
+    .content {
+      flex: 1;
+      padding: 1.25rem 1.5rem 1.5rem;
+      overflow-y: auto;
+    }
+
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1rem;
+      gap: 1rem;
+    }
+
+    .content-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .content-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .content-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .content-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      background: #ffffff;
+      color: var(--text-main);
+      border-color: var(--border-soft);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary-dark);
+    }
+
+    .btn-ghost {
+      background: transparent;
+    }
+
+    .btn:active {
+      transform: translateY(0.5px);
+    }
+
+    /* Filters row */
+    .filters-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-select,
+    .filter-input {
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 0.8rem;
+      outline: none;
+      background: #ffffff;
+    }
+
+    .filter-select:focus,
+    .filter-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.22);
+    }
+
+    .filters-row .spacer {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    /* Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.9rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 0.8rem;
+      border: 1px solid var(--border-soft);
+      padding: 0.9rem;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.45rem;
+    }
+
+    .card-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .card-stat {
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin-bottom: 0.15rem;
+    }
+
+    .card-footer {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .badge-pill {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      color: var(--text-muted);
+    }
+
+    .trend-up {
+      color: var(--accent-green);
+      font-weight: 500;
+    }
+
+    .trend-down {
+      color: var(--danger);
+      font-weight: 500;
+    }
+
+    /* Table */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 0.7rem;
+      border: 1px solid var(--border-soft);
+      background: #ffffff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      min-width: 780px;
+    }
+
+    thead {
+      background: #f9fafb;
+    }
+
+    th,
+    td {
+      padding: 0.55rem 0.7rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    tr:hover td {
+      background: #f9fafb;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 500;
+    }
+
+    .pill-green {
+      background: rgba(16, 185, 129, 0.08);
+      color: var(--accent-green);
+    }
+
+    .pill-blue {
+      background: rgba(37, 99, 235, 0.08);
+      color: var(--primary-dark);
+    }
+
+    .pill-yellow {
+      background: rgba(245, 158, 11, 0.1);
+      color: #b45309;
+    }
+
+    .pill-red {
+      background: rgba(239, 68, 68, 0.08);
+      color: var(--danger);
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .sidebar {
+        width: 220px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        height: auto;
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+      }
+
+      .sidebar-header {
+        display: none;
+      }
+
+      .sidebar-nav {
+        display: flex;
+        padding: 0.4rem;
+      }
+
+      .nav-item {
+        margin: 0.15rem;
+        padding: 0.4rem 0.6rem;
+        border-radius: 999px;
+      }
+
+      .sidebar-footer {
+        display: none;
+      }
+
+      .topbar {
+        padding: 0.6rem 0.9rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .content {
+        padding: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar-center {
+        display: none;
+      }
+
+      .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      table {
+        min-width: 640px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-circle">AH</div>
+        <div class="sidebar-title">
+          <span class="sidebar-title-main">AFGOI HOSPITAL</span>
+          <span class="sidebar-title-sub">Hospital Management System</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div style="width: 100%;">
+          <div class="nav-section-label">Main Modules</div>
+
+          <a class="nav-item" href="afgoi-hms-dashboard.html">
+            <span class="icon">🏠</span>
+            <span>Dashboard (Overview)</span>
+          </a>
+
+          <a class="nav-item" href="doctors.html">
+            <span class="icon">👨‍⚕️</span>
+            <span>Doctors</span>
+          </a>
+
+          <a class="nav-item" href="nurses.html">
+            <span class="icon">👩‍⚕️</span>
+            <span>Nurses</span>
+          </a>
+
+          <a class="nav-item" href="patients.html">
+            <span class="icon">🧑‍🦽</span>
+            <span>Patients</span>
+          </a>
+
+          <a class="nav-item" href="admissions.html">
+            <span class="icon">📥</span>
+            <span>Admissions</span>
+          </a>
+
+          <a class="nav-item" href="opd.html">
+            <span class="icon">🏥</span>
+            <span>OPD</span>
+          </a>
+
+          <a class="nav-item" href="laboratory.html">
+            <span class="icon">🧪</span>
+            <span>Laboratory</span>
+          </a>
+
+          <a class="nav-item" href="radiology.html">
+            <span class="icon">🖥️</span>
+            <span>Radiology / X-Ray</span>
+          </a>
+
+          <!-- Surgery active -->
+          <a class="nav-item active" href="surgery.html">
+            <span class="icon">🩺</span>
+            <span>Surgery</span>
+          </a>
+
+          <a class="nav-item" href="pharmacy.html">
+            <span class="icon">💊</span>
+            <span>Pharmacy</span>
+          </a>
+
+          <a class="nav-item" href="billing.html">
+            <span class="icon">💰</span>
+            <span>Billing</span>
+          </a>
+
+          <a class="nav-item" href="inventory.html">
+            <span class="icon">📦</span>
+            <span>Inventory</span>
+          </a>
+
+          <a class="nav-item" href="hr.html">
+            <span class="icon">🧑‍💼</span>
+            <span>HR & Staff</span>
+          </a>
+
+          <a class="nav-item" href="emergency.html">
+            <span class="icon">🚨</span>
+            <span>Emergency</span>
+          </a>
+
+          <a class="nav-item" href="discharge.html">
+            <span class="icon">✅</span>
+            <span>Discharge</span>
+          </a>
+
+          <a class="nav-item" href="settings.html">
+            <span class="icon">⚙️</span>
+            <span>Settings</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span>© 2025 – AFGOI HMS</span>
+        <span>All Rights Reserved.</span>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-title">Surgery & Operating Theatre</div>
+          <div class="topbar-subtitle">
+            Track scheduled, in-theatre and completed operations in real-time.
+          </div>
+        </div>
+        <div class="topbar-center">
+          <input
+            class="search-input"
+            id="globalSearch"
+            placeholder="Quick search by patient, procedure or OR…"
+          />
+        </div>
+        <div class="topbar-right">
+          <span class="status-pill">OT Status: Normal Load</span>
+          <div class="user-chip">
+            <div class="user-avatar">AD</div>
+            <div class="user-meta">
+              <span class="user-name">Admin – AFGOI</span>
+              <span class="user-role">OR Coordinator</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <section class="content">
+        <!-- Header row -->
+        <div class="content-header">
+          <div class="content-title-block">
+            <h1 class="content-title">Surgery Schedule</h1>
+            <p class="content-subtitle">
+              Filter by theatre, type, priority or status. (Front-end demo – later will connect to AFGOI HMS Surgery module.)
+            </p>
+          </div>
+          <div class="content-actions">
+            <button class="btn btn-ghost">Today</button>
+            <button class="btn btn-ghost">This Week</button>
+            <button class="btn btn-primary">+ New Surgery Case</button>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card" style="margin-bottom: 1rem;">
+          <div class="filters-row">
+            <select id="filterTheatre" class="filter-select">
+              <option value="all">All Theatres</option>
+              <option value="OR-1">OR-1</option>
+              <option value="OR-2">OR-2</option>
+              <option value="OR-3">OR-3</option>
+              <option value="Minor OT">Minor OT</option>
+            </select>
+
+            <select id="filterType" class="filter-select">
+              <option value="all">All Types</option>
+              <option value="Elective">Elective</option>
+              <option value="Emergency">Emergency</option>
+            </select>
+
+            <select id="filterPriority" class="filter-select">
+              <option value="all">All Priorities</option>
+              <option value="Routine">Routine</option>
+              <option value="Urgent">Urgent</option>
+              <option value="Stat">Stat</option>
+            </select>
+
+            <select id="filterStatus" class="filter-select">
+              <option value="all">All Status</option>
+              <option value="Scheduled">Scheduled</option>
+              <option value="In Theatre">In Theatre</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+
+            <div class="spacer"></div>
+
+            <input
+              id="filterSearch"
+              class="filter-input"
+              placeholder="Search by patient, procedure, surgeon…"
+            />
+          </div>
+        </div>
+
+        <!-- Summary cards -->
+        <div class="stats-grid">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Total Cases (Filtered)</span>
+              <span class="badge-pill">Current view</span>
+            </div>
+            <div class="card-stat" id="statTotal">0</div>
+            <div class="card-footer">
+              All surgeries that match selected filters.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">In Theatre Now</span>
+              <span class="badge-pill">Live</span>
+            </div>
+            <div class="card-stat" id="statInTheatre">0</div>
+            <div class="card-footer">
+              Operations currently in progress.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Completed</span>
+              <span class="badge-pill">Finished</span>
+            </div>
+            <div class="card-stat" id="statCompleted">0</div>
+            <div class="card-footer">
+              Completed & handed over to ward/recovery.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Cancelled</span>
+              <span class="badge-pill">Not done</span>
+            </div>
+            <div class="card-stat" id="statCancelled">0</div>
+            <div class="card-footer">
+              Cases cancelled for any reason.
+            </div>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Case ID</th>
+                <th>Patient</th>
+                <th>Procedure</th>
+                <th>Surgeon</th>
+                <th>Theatre</th>
+                <th>Type</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Start</th>
+                <th>End</th>
+              </tr>
+            </thead>
+            <tbody id="surgeryTableBody">
+              <!-- Rows injected by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Demo surgery data
+    const surgeryCases = [
+      {
+        id: "SUR-2025-001",
+        patient: "Ahmed Ali (#P-1021)",
+        procedure: "Appendectomy",
+        surgeon: "Dr. Hassan",
+        theatre: "OR-1",
+        type: "Emergency",
+        priority: "Stat",
+        status: "In Theatre",
+        start: "09:10",
+        end: "—"
+      },
+      {
+        id: "SUR-2025-002",
+        patient: "Hodan Ismail (#P-1033)",
+        procedure: "Cesarean Section (C-Section)",
+        surgeon: "Dr. Amina",
+        theatre: "OR-2",
+        type: "Elective",
+        priority: "Urgent",
+        status: "Scheduled",
+        start: "10:00",
+        end: "—"
+      },
+      {
+        id: "SUR-2025-003",
+        patient: "Yasin Noor (#P-0998)",
+        procedure: "ORIF – Tibia Fracture",
+        surgeon: "Dr. Mohamed",
+        theatre: "OR-3",
+        type: "Emergency",
+        priority: "Stat",
+        status: "Completed",
+        start: "08:00",
+        end: "09:05"
+      },
+      {
+        id: "SUR-2025-004",
+        patient: "Fartun Omar (#P-1005)",
+        procedure: "Laparoscopic Cholecystectomy",
+        surgeon: "Dr. Abdi",
+        theatre: "OR-1",
+        type: "Elective",
+        priority: "Routine",
+        status: "Completed",
+        start: "07:00",
+        end: "08:10"
+      },
+      {
+        id: "SUR-2025-005",
+        patient: "Abdullahi Mohamed (#P-1018)",
+        procedure: "Minor Skin Lesion Excision",
+        surgeon: "Dr. Ali",
+        theatre: "Minor OT",
+        type: "Elective",
+        priority: "Routine",
+        status: "Cancelled",
+        start: "—",
+        end: "—"
+      }
+    ];
+
+    const tableBody = document.getElementById("surgeryTableBody");
+    const filterTheatre = document.getElementById("filterTheatre");
+    const filterType = document.getElementById("filterType");
+    const filterPriority = document.getElementById("filterPriority");
+    const filterStatus = document.getElementById("filterStatus");
+    const filterSearch = document.getElementById("filterSearch");
+    const globalSearch = document.getElementById("globalSearch");
+
+    const statTotal = document.getElementById("statTotal");
+    const statInTheatre = document.getElementById("statInTheatre");
+    const statCompleted = document.getElementById("statCompleted");
+    const statCancelled = document.getElementById("statCancelled");
+
+    function getStatusClass(status) {
+      switch (status) {
+        case "Completed":
+          return "pill pill-green";
+        case "In Theatre":
+          return "pill pill-yellow";
+        case "Scheduled":
+          return "pill pill-blue";
+        case "Cancelled":
+          return "pill pill-red";
+        default:
+          return "pill";
+      }
+    }
+
+    function renderTable(rows) {
+      if (!rows.length) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="10" class="text-center">
+              No surgery cases found for the selected filters.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tableBody.innerHTML = rows
+        .map(caseItem => `
+          <tr>
+            <td>${caseItem.id}</td>
+            <td>${caseItem.patient}</td>
+            <td>${caseItem.procedure}</td>
+            <td>${caseItem.surgeon}</td>
+            <td>${caseItem.theatre}</td>
+            <td>${caseItem.type}</td>
+            <td>${caseItem.priority}</td>
+            <td><span class="${getStatusClass(caseItem.status)}">${caseItem.status}</span></td>
+            <td>${caseItem.start}</td>
+            <td>${caseItem.end}</td>
+          </tr>
+        `)
+        .join("");
+    }
+
+    function updateStats(rows) {
+      statTotal.textContent = rows.length;
+      statInTheatre.textContent = rows.filter(c => c.status === "In Theatre").length;
+      statCompleted.textContent = rows.filter(c => c.status === "Completed").length;
+      statCancelled.textContent = rows.filter(c => c.status === "Cancelled").length;
+    }
+
+    function applyFilters() {
+      const theatre = filterTheatre.value;
+      const type = filterType.value;
+      const priority = filterPriority.value;
+      const status = filterStatus.value;
+      const searchValue = (filterSearch.value || globalSearch.value || "").toLowerCase().trim();
+
+      const filtered = surgeryCases.filter(c => {
+        const matchTheatre = theatre === "all" || c.theatre === theatre;
+        const matchType = type === "all" || c.type === type;
+        const matchPriority = priority === "all" || c.priority === priority;
+        const matchStatus = status === "all" || c.status === status;
+
+        const text = (
+          c.id +
+          " " +
+          c.patient +
+          " " +
+          c.procedure +
+          " " +
+          c.surgeon +
+          " " +
+          c.theatre
+        ).toLowerCase();
+        const matchSearch = !searchValue || text.includes(searchValue);
+
+        return matchTheatre && matchType && matchPriority && matchStatus && matchSearch;
+      });
+
+      renderTable(filtered);
+      updateStats(filtered);
+    }
+
+    [filterTheatre, filterType, filterPriority, filterStatus].forEach(el =>
+      el.addEventListener("change", applyFilters)
+    );
+    [filterSearch, globalSearch].forEach(el =>
+      el.addEventListener("input", applyFilters)
+    );
+
+    // Initial render
+    renderTable(surgeryCases);
+    updateStats(surgeryCases);
+  </script>
+</body>
+</html>
