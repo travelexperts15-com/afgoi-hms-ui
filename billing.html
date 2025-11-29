@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AFGOI HOSPITAL – Billing & Invoices</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --bg: #778FD7;
+      --card-bg: #FFFFFF;
+      --text-main: #111827;
+      --text-muted: #6B7280;
+      --border-soft: #E5E7EB;
+      --accent-green: #10B981;
+      --danger: #EF4444;
+      --warning: #F59E0B;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background-color: var(--bg);
+    }
+
+    .layout {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: #0B1120;
+      color: #E5E7EB;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(148,163,184,0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #38BDF8, #2563EB);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: white;
+    }
+
+    .nav-item {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.55rem 1rem;
+      margin: 0.15rem 0.5rem;
+      border-radius: 0.6rem;
+      text-decoration: none;
+      color: #E5E7EB;
+      font-size: 0.86rem;
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item.active {
+      background: rgba(37,99,235,0.18);
+      border-left-color: var(--primary);
+      color: #FFF;
+    }
+
+    .nav-item:hover {
+      background: rgba(37,99,235,0.12);
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Topbar */
+    .topbar {
+      background: #FFF;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .search-input {
+      width: 350px;
+      padding: 0.45rem;
+      border: 1px solid var(--border-soft);
+      border-radius: 999px;
+      outline: none;
+    }
+
+    /* Content */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+    }
+
+    .filters-row {
+      display: flex;
+      gap: 0.7rem;
+      margin-bottom: 1rem;
+    }
+
+    .filter-select {
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 0.8rem;
+      background: #FFF;
+    }
+
+    .table-wrapper {
+      background: #FFF;
+      border-radius: 0.8rem;
+      border: 1px solid var(--border-soft);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      min-width: 850px;
+    }
+
+    th, td {
+      padding: 0.65rem;
+      border-bottom: 1px solid var(--border-soft);
+      text-align: left;
+    }
+
+    .pill {
+      padding: 0.25rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      color: white;
+    }
+
+    .paid {
+      background: var(--accent-green);
+    }
+
+    .pending {
+      background: var(--warning);
+    }
+
+    .overdue {
+      background: var(--danger);
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-circle">AH</div>
+      <div>
+        <div>AFGOI HOSPITAL</div>
+        <small>Hospital Management System</small>
+      </div>
+    </div>
+
+    <nav>
+      <a class="nav-item" href="afgoi-hms-dashboard.html">🏠 Dashboard</a>
+      <a class="nav-item" href="doctors.html">👨‍⚕️ Doctors</a>
+      <a class="nav-item" href="nurses.html">👩‍⚕️ Nurses</a>
+      <a class="nav-item" href="patients.html">🧑‍🦽 Patients</a>
+      <a class="nav-item" href="admissions.html">📥 Admissions</a>
+      <a class="nav-item" href="opd.html">🏥 OPD</a>
+      <a class="nav-item" href="laboratory.html">🧪 Laboratory</a>
+      <a class="nav-item" href="radiology.html">🖥️ Radiology</a>
+      <a class="nav-item" href="surgery.html">🩺 Surgery</a>
+      <a class="nav-item" href="pharmacy.html">💊 Pharmacy</a>
+      <a class="nav-item active" href="billing.html">💰 Billing</a>
+      <a class="nav-item" href="inventory.html">📦 Inventory</a>
+      <a class="nav-item" href="hr.html">🧑‍💼 HR</a>
+      <a class="nav-item" href="emergency.html">🚨 Emergency</a>
+      <a class="nav-item" href="discharge.html">✅ Discharge</a>
+      <a class="nav-item" href="settings.html">⚙️ Settings</a>
+    </nav>
+
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <header class="topbar">
+      <h2>Billing & Invoice Management</h2>
+      <input id="searchInput" class="search-input" placeholder="Search invoice, patient, status…" />
+    </header>
+
+    <section class="content">
+
+      <!-- Filters -->
+      <div class="filters-row">
+        <select id="filterStatus" class="filter-select">
+          <option value="all">All Status</option>
+          <option value="Paid">Paid</option>
+          <option value="Pending">Pending</option>
+          <option value="Overdue">Overdue</option>
+        </select>
+
+        <select id="filterType" class="filter-select">
+          <option value="all">All Types</option>
+          <option value="Consultation">Consultation</option>
+          <option value="Medication">Medication</option>
+          <option value="Surgery">Surgery</option>
+          <option value="Laboratory">Laboratory</option>
+          <option value="Radiology">Radiology</option>
+        </select>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Invoice ID</th>
+              <th>Patient</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="billingTable"></tbody>
+        </table>
+      </div>
+
+    </section>
+  </main>
+</div>
+
+<script>
+const invoices = [
+  { id: "INV-1001", patient:"Ahmed Ali", type:"Consultation", amount:"$30", status:"Paid", date:"2025-01-11" },
+  { id: "INV-1002", patient:"Hodan Ismail", type:"Medication", amount:"$12", status:"Pending", date:"2025-01-11" },
+  { id: "INV-1003", patient:"Yasin Noor", type:"Laboratory", amount:"$25", status:"Paid", date:"2025-01-10" },
+  { id: "INV-1004", patient:"Fartun Omar", type:"Surgery", amount:"$210", status:"Overdue", date:"2025-01-09" },
+  { id: "INV-1005", patient:"Abdul Mohamed", type:"Radiology", amount:"$18", status:"Pending", date:"2025-01-09" },
+];
+
+function renderTable(data) {
+  document.getElementById("billingTable").innerHTML = data.map(i => `
+    <tr>
+      <td>${i.id}</td>
+      <td>${i.patient}</td>
+      <td>${i.type}</td>
+      <td>${i.amount}</td>
+      <td><span class="pill ${i.status.toLowerCase()}">${i.status}</span></td>
+      <td>${i.date}</td>
+    </tr>
+  `).join("");
+}
+
+function applyFilters() {
+  const status = document.getElementById("filterStatus").value;
+  const type = document.getElementById("filterType").value;
+  const search = document.getElementById("searchInput").value.toLowerCase();
+
+  const filtered = invoices.filter(i =>
+    (status === "all" || i.status === status) &&
+    (type === "all" || i.type === type) &&
+    (i.patient.toLowerCase().includes(search) ||
+     i.id.toLowerCase().includes(search))
+  );
+
+  renderTable(filtered);
+}
+
+document.getElementById("filterStatus").addEventListener("change", applyFilters);
+document.getElementById("filterType").addEventListener("change", applyFilters);
+document.getElementById("searchInput").addEventListener("input", applyFilters);
+
+renderTable(invoices);
+</script>
+
+</body>
+</html>
