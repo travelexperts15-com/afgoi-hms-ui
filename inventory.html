@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AFGOI HOSPITAL – Inventory & Stock Control</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --bg: #778FD7; /* isla background-ka dashboard */
+      --card-bg: #FFFFFF;
+      --text-main: #111827;
+      --text-muted: #6B7280;
+      --border-soft: #E5E7EB;
+      --accent-green: #10B981;
+      --danger: #EF4444;
+      --warning: #F59E0B;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+    }
+
+    .layout {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: #0B1120;
+      color: #E5E7EB;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #38BDF8, #2563EB);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: white;
+    }
+
+    .sidebar-title {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .sidebar-title-main {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .sidebar-title-sub {
+      font-size: 0.75rem;
+      color: #9CA3AF;
+    }
+
+    .sidebar-nav {
+      padding: 1rem 0.5rem 1.25rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .nav-section-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6B7280;
+      padding: 0.25rem 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.55rem 1rem;
+      margin: 0.15rem 0.5rem;
+      border-radius: 0.6rem;
+      font-size: 0.86rem;
+      color: #E5E7EB;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+      text-decoration: none;
+    }
+
+    .nav-item span.icon {
+      font-size: 1rem;
+      width: 1.4rem;
+      text-align: center;
+    }
+
+    .nav-item:hover {
+      background: rgba(37, 99, 235, 0.12);
+    }
+
+    .nav-item.active {
+      background: rgba(37, 99, 235, 0.18);
+      border-left-color: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .sidebar-footer {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.3);
+      font-size: 0.75rem;
+      color: #6B7280;
+    }
+
+    .sidebar-footer span {
+      display: block;
+    }
+
+    /* Main area */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* Top bar */
+    .topbar {
+      height: 64px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      gap: 1rem;
+    }
+
+    .topbar-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .topbar-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .topbar-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .topbar-center {
+      flex: 1;
+      max-width: 420px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .status-pill {
+      font-size: 0.78rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.06);
+      color: var(--accent-green);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #38BDF8, #2563EB);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .user-meta {
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.05rem;
+    }
+
+    .user-name {
+      font-weight: 500;
+    }
+
+    .user-role {
+      color: var(--text-muted);
+    }
+
+    /* Content */
+    .content {
+      flex: 1;
+      padding: 1.25rem 1.5rem 1.5rem;
+      overflow-y: auto;
+    }
+
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1rem;
+      gap: 1rem;
+    }
+
+    .content-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .content-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .content-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .content-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      background: #FFFFFF;
+      color: var(--text-main);
+      border-color: var(--border-soft);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary-dark);
+    }
+
+    .btn-ghost {
+      background: transparent;
+    }
+
+    .btn:active {
+      transform: translateY(0.5px);
+    }
+
+    /* Filters row */
+    .filters-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-select,
+    .filter-input {
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 0.8rem;
+      outline: none;
+      background: #FFFFFF;
+    }
+
+    .filter-select:focus,
+    .filter-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.22);
+    }
+
+    .filters-row .spacer {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    /* Stats cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.9rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 0.8rem;
+      border: 1px solid var(--border-soft);
+      padding: 0.9rem;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.45rem;
+    }
+
+    .card-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .card-stat {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.15rem;
+    }
+
+    .card-footer {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .badge-pill {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      color: var(--text-muted);
+    }
+
+    /* Table */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 0.7rem;
+      border: 1px solid var(--border-soft);
+      background: #FFFFFF;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      min-width: 780px;
+    }
+
+    thead {
+      background: #F9FAFB;
+    }
+
+    th,
+    td {
+      padding: 0.55rem 0.7rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    tr:hover td {
+      background: #F9FAFB;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 500;
+    }
+
+    .pill-green {
+      background: rgba(16, 185, 129, 0.08);
+      color: var(--accent-green);
+    }
+
+    .pill-yellow {
+      background: rgba(245, 158, 11, 0.1);
+      color: #B45309;
+    }
+
+    .pill-red {
+      background: rgba(239, 68, 68, 0.08);
+      color: var(--danger);
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .sidebar {
+        width: 220px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        height: auto;
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+      }
+
+      .sidebar-header {
+        display: none;
+      }
+
+      .sidebar-nav {
+        display: flex;
+        padding: 0.4rem;
+      }
+
+      .nav-item {
+        margin: 0.15rem;
+        padding: 0.4rem 0.6rem;
+        border-radius: 999px;
+      }
+
+      .sidebar-footer {
+        display: none;
+      }
+
+      .topbar {
+        padding: 0.6rem 0.9rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .content {
+        padding: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar-center {
+        display: none;
+      }
+
+      .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      table {
+        min-width: 640px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-circle">AH</div>
+        <div class="sidebar-title">
+          <span class="sidebar-title-main">AFGOI HOSPITAL</span>
+          <span class="sidebar-title-sub">Hospital Management System</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div style="width: 100%;">
+          <div class="nav-section-label">Main Modules</div>
+
+          <a class="nav-item" href="afgoi-hms-dashboard.html">
+            <span class="icon">🏠</span>
+            <span>Dashboard (Overview)</span>
+          </a>
+
+          <a class="nav-item" href="doctors.html">
+            <span class="icon">👨‍⚕️</span>
+            <span>Doctors</span>
+          </a>
+
+          <a class="nav-item" href="nurses.html">
+            <span class="icon">👩‍⚕️</span>
+            <span>Nurses</span>
+          </a>
+
+          <a class="nav-item" href="patients.html">
+            <span class="icon">🧑‍🦽</span>
+            <span>Patients</span>
+          </a>
+
+          <a class="nav-item" href="admissions.html">
+            <span class="icon">📥</span>
+            <span>Admissions</span>
+          </a>
+
+          <a class="nav-item" href="opd.html">
+            <span class="icon">🏥</span>
+            <span>OPD</span>
+          </a>
+
+          <a class="nav-item" href="laboratory.html">
+            <span class="icon">🧪</span>
+            <span>Laboratory</span>
+          </a>
+
+          <a class="nav-item" href="radiology.html">
+            <span class="icon">🖥️</span>
+            <span>Radiology / X-Ray</span>
+          </a>
+
+          <a class="nav-item" href="surgery.html">
+            <span class="icon">🩺</span>
+            <span>Surgery</span>
+          </a>
+
+          <a class="nav-item" href="pharmacy.html">
+            <span class="icon">💊</span>
+            <span>Pharmacy</span>
+          </a>
+
+          <!-- Inventory ACTIVE -->
+          <a class="nav-item active" href="inventory.html">
+            <span class="icon">📦</span>
+            <span>Inventory</span>
+          </a>
+
+          <a class="nav-item" href="billing.html">
+            <span class="icon">💰</span>
+            <span>Billing</span>
+          </a>
+
+          <a class="nav-item" href="hr.html">
+            <span class="icon">🧑‍💼</span>
+            <span>HR & Staff</span>
+          </a>
+
+          <a class="nav-item" href="emergency.html">
+            <span class="icon">🚨</span>
+            <span>Emergency</span>
+          </a>
+
+          <a class="nav-item" href="discharge.html">
+            <span class="icon">✅</span>
+            <span>Discharge</span>
+          </a>
+
+          <a class="nav-item" href="settings.html">
+            <span class="icon">⚙️</span>
+            <span>Settings</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span>© 2025 – AFGOI HMS</span>
+        <span>All Rights Reserved.</span>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-title">Inventory & Stock Control</div>
+          <div class="topbar-subtitle">
+            Track medicines, medical supplies, and re-order levels across AFGOI Hospital.
+          </div>
+        </div>
+        <div class="topbar-center">
+          <input
+            class="search-input"
+            id="globalSearch"
+            placeholder="Quick search by item, code or department…"
+          />
+        </div>
+        <div class="topbar-right">
+          <span class="status-pill">Inventory Status: Stable</span>
+          <div class="user-chip">
+            <div class="user-avatar">AD</div>
+            <div class="user-meta">
+              <span class="user-name">Admin – AFGOI</span>
+              <span class="user-role">Inventory Manager</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <section class="content">
+        <!-- Header row -->
+        <div class="content-header">
+          <div class="content-title-block">
+            <h1 class="content-title">Inventory Overview</h1>
+            <p class="content-subtitle">
+              Filter by department, category, expiry and stock status. (Front-end demo – later will connect to AFGOI HMS Inventory module.)
+            </p>
+          </div>
+          <div class="content-actions">
+            <button class="btn btn-ghost">Today</button>
+            <button class="btn btn-ghost">This Week</button>
+            <button class="btn btn-primary">+ New Item</button>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card" style="margin-bottom: 1rem;">
+          <div class="filters-row">
+            <select id="filterDepartment" class="filter-select">
+              <option value="all">All Departments</option>
+              <option value="Pharmacy">Pharmacy</option>
+              <option value="Laboratory">Laboratory</option>
+              <option value="Surgery">Surgery</option>
+              <option value="Ward">Ward / Inpatient</option>
+              <option value="Emergency">Emergency</option>
+            </select>
+
+            <select id="filterCategory" class="filter-select">
+              <option value="all">All Categories</option>
+              <option value="Medicine">Medicine</option>
+              <option value="Consumable">Consumable</option>
+              <option value="Equipment">Equipment</option>
+              <option value="Reagent">Reagent</option>
+            </select>
+
+            <select id="filterStockStatus" class="filter-select">
+              <option value="all">All Stock Status</option>
+              <option value="OK">Stock OK</option>
+              <option value="Low">Low Stock</option>
+              <option value="Out">Out of Stock</option>
+            </select>
+
+            <select id="filterExpiry" class="filter-select">
+              <option value="all">All Expiry</option>
+              <option value="Valid">Valid</option>
+              <option value="Near">Expiring Soon</option>
+              <option value="Expired">Expired</option>
+            </select>
+
+            <div class="spacer"></div>
+
+            <input
+              id="filterSearch"
+              class="filter-input"
+              placeholder="Search by item, code or batch…"
+            />
+          </div>
+        </div>
+
+        <!-- Summary cards -->
+        <div class="stats-grid">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Items (Filtered)</span>
+              <span class="badge-pill">Current view</span>
+            </div>
+            <div class="card-stat" id="statItems">0</div>
+            <div class="card-footer">
+              All inventory lines matching selected filters.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Low Stock</span>
+              <span class="badge-pill">Re-order soon</span>
+            </div>
+            <div class="card-stat" id="statLow">0</div>
+            <div class="card-footer">
+              Items below re-order level.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Out of Stock</span>
+              <span class="badge-pill">Critical</span>
+            </div>
+            <div class="card-stat" id="statOut">0</div>
+            <div class="card-footer">
+              Items with zero available quantity.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Expiring Soon</span>
+              <span class="badge-pill">30 days</span>
+            </div>
+            <div class="card-stat" id="statNearExpiry">0</div>
+            <div class="card-footer">
+              Check and plan usage or returns.
+            </div>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Item Code</th>
+                <th>Item Name</th>
+                <th>Department</th>
+                <th>Category</th>
+                <th>Batch</th>
+                <th>Stock</th>
+                <th>Re-order</th>
+                <th>Status</th>
+                <th>Expiry</th>
+              </tr>
+            </thead>
+            <tbody id="inventoryTableBody">
+              <!-- Rows by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Demo inventory data
+    const inventoryItems = [
+      {
+        code: "MED-001",
+        name: "Paracetamol 500mg Tablet",
+        department: "Pharmacy",
+        category: "Medicine",
+        batch: "B-2025-01",
+        stock: 320,
+        reorder: 100,
+        stockStatus: "OK",
+        expiryStatus: "Valid",
+        expiryLabel: "2026-03-15"
+      },
+      {
+        code: "MED-002",
+        name: "Amoxicillin 500mg Capsule",
+        department: "Pharmacy",
+        category: "Medicine",
+        batch: "B-2024-12",
+        stock: 80,
+        reorder: 150,
+        stockStatus: "Low",
+        expiryStatus: "Near",
+        expiryLabel: "2025-01-10"
+      },
+      {
+        code: "LAB-001",
+        name: "CBC Reagent Kit",
+        department: "Laboratory",
+        category: "Reagent",
+        batch: "LAB-7788",
+        stock: 6,
+        reorder: 5,
+        stockStatus: "OK",
+        expiryStatus: "Near",
+        expiryLabel: "2025-02-05"
+      },
+      {
+        code: "SUR-001",
+        name: "Sterile Surgical Gloves (Box)",
+        department: "Surgery",
+        category: "Consumable",
+        batch: "SUR-9921",
+        stock: 15,
+        reorder: 30,
+        stockStatus: "Low",
+        expiryStatus: "Valid",
+        expiryLabel: "2027-07-30"
+      },
+      {
+        code: "WARD-001",
+        name: "Normal Saline 0.9% 500ml",
+        department: "Ward",
+        category: "Consumable",
+        batch: "NS-11-25",
+        stock: 0,
+        reorder: 50,
+        stockStatus: "Out",
+        expiryStatus: "Valid",
+        expiryLabel: "2025-09-01"
+      },
+      {
+        code: "ER-001",
+        name: "Adrenaline 1mg/ml Ampoule",
+        department: "Emergency",
+        category: "Medicine",
+        batch: "ER-555",
+        stock: 12,
+        reorder: 20,
+        stockStatus: "Low",
+        expiryStatus: "Near",
+        expiryLabel: "2025-01-05"
+      },
+      {
+        code: "EQP-001",
+        name: "Portable Nebulizer",
+        department: "Emergency",
+        category: "Equipment",
+        batch: "EQ-2024-01",
+        stock: 3,
+        reorder: 2,
+        stockStatus: "OK",
+        expiryStatus: "Valid",
+        expiryLabel: "N/A"
+      },
+      {
+        code: "LAB-002",
+        name: "Urine Strip (100 tests)",
+        department: "Laboratory",
+        category: "Consumable",
+        batch: "LAB-UR-004",
+        stock: 0,
+        reorder: 20,
+        stockStatus: "Out",
+        expiryStatus: "Expired",
+        expiryLabel: "2024-06-15"
+      }
+    ];
+
+    const tableBody = document.getElementById("inventoryTableBody");
+    const filterDepartment = document.getElementById("filterDepartment");
+    const filterCategory = document.getElementById("filterCategory");
+    const filterStockStatus = document.getElementById("filterStockStatus");
+    const filterExpiry = document.getElementById("filterExpiry");
+    const filterSearch = document.getElementById("filterSearch");
+    const globalSearch = document.getElementById("globalSearch");
+
+    const statItems = document.getElementById("statItems");
+    const statLow = document.getElementById("statLow");
+    const statOut = document.getElementById("statOut");
+    const statNearExpiry = document.getElementById("statNearExpiry");
+
+    function getStockClass(status) {
+      switch (status) {
+        case "OK":
+          return "pill pill-green";
+        case "Low":
+          return "pill pill-yellow";
+        case "Out":
+          return "pill pill-red";
+        default:
+          return "pill";
+      }
+    }
+
+    function getExpiryClass(status) {
+      switch (status) {
+        case "Valid":
+          return "pill pill-green";
+        case "Near":
+          return "pill pill-yellow";
+        case "Expired":
+          return "pill pill-red";
+        default:
+          return "pill";
+      }
+    }
+
+    function renderTable(rows) {
+      if (!rows.length) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="9" class="text-center">
+              No inventory items found for the selected filters.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tableBody.innerHTML = rows
+        .map(item => `
+          <tr>
+            <td>${item.code}</td>
+            <td>${item.name}</td>
+            <td>${item.department}</td>
+            <td>${item.category}</td>
+            <td>${item.batch}</td>
+            <td>${item.stock}</td>
+            <td>${item.reorder}</td>
+            <td><span class="${getStockClass(item.stockStatus)}">${item.stockStatus}</span></td>
+            <td><span class="${getExpiryClass(item.expiryStatus)}">${item.expiryStatus === "Valid" ? "Valid ("+item.expiryLabel+")" : item.expiryStatus + " ("+item.expiryLabel+")"}</span></td>
+          </tr>
+        `)
+        .join("");
+    }
+
+    function updateStats(rows) {
+      statItems.textContent = rows.length;
+      statLow.textContent = rows.filter(i => i.stockStatus === "Low").length;
+      statOut.textContent = rows.filter(i => i.stockStatus === "Out").length;
+      statNearExpiry.textContent = rows.filter(i => i.expiryStatus === "Near").length;
+    }
+
+    function applyFilters() {
+      const department = filterDepartment.value;
+      const category = filterCategory.value;
+      const stockStatus = filterStockStatus.value;
+      const expiry = filterExpiry.value;
+      const searchValue = (filterSearch.value || globalSearch.value || "").toLowerCase().trim();
+
+      const filtered = inventoryItems.filter(item => {
+        const matchDept = department === "all" || item.department === department;
+        const matchCategory = category === "all" || item.category === category;
+        const matchStock = stockStatus === "all" || item.stockStatus === stockStatus;
+        const matchExpiry = expiry === "all" || item.expiryStatus === expiry;
+
+        const text =
+          (item.code + " " + item.name + " " + item.department + " " + item.category + " " + item.batch)
+            .toLowerCase();
+        const matchSearch = !searchValue || text.includes(searchValue);
+
+        return matchDept && matchCategory && matchStock && matchExpiry && matchSearch;
+      });
+
+      renderTable(filtered);
+      updateStats(filtered);
+    }
+
+    [filterDepartment, filterCategory, filterStockStatus, filterExpiry].forEach(el =>
+      el.addEventListener("change", applyFilters)
+    );
+    [filterSearch, globalSearch].forEach(el =>
+      el.addEventListener("input", applyFilters)
+    );
+
+    // Initial render
+    renderTable(inventoryItems);
+    updateStats(inventoryItems);
+  </script>
+</body>
+</html>
