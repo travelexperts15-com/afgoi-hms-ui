@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AFGOI HOSPITAL – HR & Staff</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --bg: #778FD7; /* Isla background-ka dashboard */
+      --card-bg: #FFFFFF;
+      --text-main: #111827;
+      --text-muted: #6B7280;
+      --border-soft: #E5E7EB;
+      --accent-green: #10B981;
+      --danger: #EF4444;
+      --warning: #F59E0B;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+    }
+
+    .layout {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: #0B1120;
+      color: #E5E7EB;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #38BDF8, #2563EB);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: white;
+    }
+
+    .sidebar-title {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .sidebar-title-main {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .sidebar-title-sub {
+      font-size: 0.75rem;
+      color: #9CA3AF;
+    }
+
+    .sidebar-nav {
+      padding: 1rem 0.5rem 1.25rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .nav-section-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6B7280;
+      padding: 0.25rem 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.55rem 1rem;
+      margin: 0.15rem 0.5rem;
+      border-radius: 0.6rem;
+      font-size: 0.86rem;
+      color: #E5E7EB;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+      text-decoration: none;
+    }
+
+    .nav-item span.icon {
+      font-size: 1rem;
+      width: 1.4rem;
+      text-align: center;
+    }
+
+    .nav-item:hover {
+      background: rgba(37, 99, 235, 0.12);
+    }
+
+    .nav-item.active {
+      background: rgba(37, 99, 235, 0.18);
+      border-left-color: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .sidebar-footer {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.3);
+      font-size: 0.75rem;
+      color: #6B7280;
+    }
+
+    .sidebar-footer span {
+      display: block;
+    }
+
+    /* Main area */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* Top bar */
+    .topbar {
+      height: 64px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      gap: 1rem;
+    }
+
+    .topbar-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .topbar-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .topbar-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .topbar-center {
+      flex: 1;
+      max-width: 420px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .status-pill {
+      font-size: 0.78rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.06);
+      color: var(--accent-green);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #38BDF8, #2563EB);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .user-meta {
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.05rem;
+    }
+
+    .user-name {
+      font-weight: 500;
+    }
+
+    .user-role {
+      color: var(--text-muted);
+    }
+
+    /* Content */
+    .content {
+      flex: 1;
+      padding: 1.25rem 1.5rem 1.5rem;
+      overflow-y: auto;
+    }
+
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1rem;
+      gap: 1rem;
+    }
+
+    .content-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .content-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .content-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .content-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      background: #FFFFFF;
+      color: var(--text-main);
+      border-color: var(--border-soft);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary-dark);
+    }
+
+    .btn-ghost {
+      background: transparent;
+    }
+
+    .btn:active {
+      transform: translateY(0.5px);
+    }
+
+    /* Filters row */
+    .filters-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-select,
+    .filter-input {
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 0.8rem;
+      outline: none;
+      background: #FFFFFF;
+    }
+
+    .filter-select:focus,
+    .filter-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.22);
+    }
+
+    .filters-row .spacer {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    /* Stats cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.9rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 0.8rem;
+      border: 1px solid var(--border-soft);
+      padding: 0.9rem;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.45rem;
+    }
+
+    .card-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .card-stat {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.15rem;
+    }
+
+    .card-footer {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .badge-pill {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      color: var(--text-muted);
+    }
+
+    /* Table */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 0.7rem;
+      border: 1px solid var(--border-soft);
+      background: #FFFFFF;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      min-width: 820px;
+    }
+
+    thead {
+      background: #F9FAFB;
+    }
+
+    th,
+    td {
+      padding: 0.55rem 0.7rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    tr:hover td {
+      background: #F9FAFB;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 500;
+    }
+
+    .pill-green {
+      background: rgba(16, 185, 129, 0.08);
+      color: var(--accent-green);
+    }
+
+    .pill-yellow {
+      background: rgba(245, 158, 11, 0.1);
+      color: #B45309;
+    }
+
+    .pill-red {
+      background: rgba(239, 68, 68, 0.08);
+      color: var(--danger);
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .sidebar {
+        width: 220px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        height: auto;
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+      }
+
+      .sidebar-header {
+        display: none;
+      }
+
+      .sidebar-nav {
+        display: flex;
+        padding: 0.4rem;
+      }
+
+      .nav-item {
+        margin: 0.15rem;
+        padding: 0.4rem 0.6rem;
+        border-radius: 999px;
+      }
+
+      .sidebar-footer {
+        display: none;
+      }
+
+      .topbar {
+        padding: 0.6rem 0.9rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .content {
+        padding: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar-center {
+        display: none;
+      }
+
+      .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      table {
+        min-width: 640px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-circle">AH</div>
+        <div class="sidebar-title">
+          <span class="sidebar-title-main">AFGOI HOSPITAL</span>
+          <span class="sidebar-title-sub">Hospital Management System</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div style="width: 100%;">
+          <div class="nav-section-label">Main Modules</div>
+
+          <a class="nav-item" href="afgoi-hms-dashboard.html">
+            <span class="icon">🏠</span>
+            <span>Dashboard (Overview)</span>
+          </a>
+
+          <a class="nav-item" href="doctors.html">
+            <span class="icon">👨‍⚕️</span>
+            <span>Doctors</span>
+          </a>
+
+          <a class="nav-item" href="nurses.html">
+            <span class="icon">👩‍⚕️</span>
+            <span>Nurses</span>
+          </a>
+
+          <a class="nav-item" href="patients.html">
+            <span class="icon">🧑‍🦽</span>
+            <span>Patients</span>
+          </a>
+
+          <a class="nav-item" href="admissions.html">
+            <span class="icon">📥</span>
+            <span>Admissions</span>
+          </a>
+
+          <a class="nav-item" href="opd.html">
+            <span class="icon">🏥</span>
+            <span>OPD</span>
+          </a>
+
+          <a class="nav-item" href="laboratory.html">
+            <span class="icon">🧪</span>
+            <span>Laboratory</span>
+          </a>
+
+          <a class="nav-item" href="radiology.html">
+            <span class="icon">🖥️</span>
+            <span>Radiology / X-Ray</span>
+          </a>
+
+          <a class="nav-item" href="surgery.html">
+            <span class="icon">🩺</span>
+            <span>Surgery</span>
+          </a>
+
+          <a class="nav-item" href="pharmacy.html">
+            <span class="icon">💊</span>
+            <span>Pharmacy</span>
+          </a>
+
+          <a class="nav-item" href="inventory.html">
+            <span class="icon">📦</span>
+            <span>Inventory</span>
+          </a>
+
+          <!-- HR ACTIVE -->
+          <a class="nav-item active" href="hr.html">
+            <span class="icon">🧑‍💼</span>
+            <span>HR & Staff</span>
+          </a>
+
+          <a class="nav-item" href="billing.html">
+            <span class="icon">💰</span>
+            <span>Billing</span>
+          </a>
+
+          <a class="nav-item" href="emergency.html">
+            <span class="icon">🚨</span>
+            <span>Emergency</span>
+          </a>
+
+          <a class="nav-item" href="discharge.html">
+            <span class="icon">✅</span>
+            <span>Discharge</span>
+          </a>
+
+          <a class="nav-item" href="settings.html">
+            <span class="icon">⚙️</span>
+            <span>Settings</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span>© 2025 – AFGOI HMS</span>
+        <span>All Rights Reserved.</span>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-title">HR & Staff Management</div>
+          <div class="topbar-subtitle">
+            View all hospital staff, roles, duty status and contract information.
+          </div>
+        </div>
+        <div class="topbar-center">
+          <input
+            class="search-input"
+            id="globalSearch"
+            placeholder="Quick search by name, ID, phone or role…"
+          />
+        </div>
+        <div class="topbar-right">
+          <span class="status-pill">HR Module: Demo Mode</span>
+          <div class="user-chip">
+            <div class="user-avatar">AD</div>
+            <div class="user-meta">
+              <span class="user-name">Admin – AFGOI</span>
+              <span class="user-role">HR Manager</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <section class="content">
+        <!-- Header row -->
+        <div class="content-header">
+          <div class="content-title-block">
+            <h1 class="content-title">HR & Staff Overview</h1>
+            <p class="content-subtitle">
+              Filter by department, role, employment type & duty status. (Front-end demo – later will connect to AFGOI HMS HR module.)
+            </p>
+          </div>
+          <div class="content-actions">
+            <button class="btn btn-ghost">Today</button>
+            <button class="btn btn-ghost">This Week</button>
+            <button class="btn btn-primary">+ New Staff Member</button>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card" style="margin-bottom: 1rem;">
+          <div class="filters-row">
+            <select id="filterDepartment" class="filter-select">
+              <option value="all">All Departments</option>
+              <option value="Doctors">Doctors</option>
+              <option value="Nursing">Nursing</option>
+              <option value="Pharmacy">Pharmacy</option>
+              <option value="Laboratory">Laboratory</option>
+              <option value="Surgery">Surgery</option>
+              <option value="Emergency">Emergency</option>
+              <option value="Administration">Administration</option>
+              <option value="Support">Support Services</option>
+            </select>
+
+            <select id="filterRole" class="filter-select">
+              <option value="all">All Roles</option>
+              <option value="Consultant">Consultant</option>
+              <option value="Medical Officer">Medical Officer</option>
+              <option value="Nurse">Nurse</option>
+              <option value="Pharmacist">Pharmacist</option>
+              <option value="Lab Technician">Lab Technician</option>
+              <option value="Theatre Nurse">Theatre Nurse</option>
+              <option value="Receptionist">Receptionist</option>
+              <option value="HR Officer">HR Officer</option>
+              <option value="IT Support">IT Support</option>
+              <option value="Cleaner">Cleaner</option>
+              <option value="Security">Security</option>
+            </select>
+
+            <select id="filterEmployment" class="filter-select">
+              <option value="all">All Employment Types</option>
+              <option value="Full-time">Full-time</option>
+              <option value="Part-time">Part-time</option>
+              <option value="Contract">Contract</option>
+            </select>
+
+            <select id="filterStatus" class="filter-select">
+              <option value="all">All Duty Status</option>
+              <option value="On Duty">On Duty</option>
+              <option value="Off Duty">Off Duty</option>
+              <option value="On Leave">On Leave</option>
+            </select>
+
+            <div class="spacer"></div>
+
+            <input
+              id="filterSearch"
+              class="filter-input"
+              placeholder="Search by staff name, ID or phone…"
+            />
+          </div>
+        </div>
+
+        <!-- Summary cards -->
+        <div class="stats-grid">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Total Staff (Filtered)</span>
+              <span class="badge-pill">Current view</span>
+            </div>
+            <div class="card-stat" id="statTotal">0</div>
+            <div class="card-footer">
+              All staff members matching selected filters.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">On Duty Now</span>
+              <span class="badge-pill">Live</span>
+            </div>
+            <div class="card-stat" id="statOnDuty">0</div>
+            <div class="card-footer">
+              Staff currently on shift.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">On Leave Today</span>
+              <span class="badge-pill">Planned off</span>
+            </div>
+            <div class="card-stat" id="statOnLeave">0</div>
+            <div class="card-footer">
+              Staff marked as on leave.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Contracts Ending Soon</span>
+              <span class="badge-pill">Next 30–60 days</span>
+            </div>
+            <div class="card-stat" id="statContractsNear">0</div>
+            <div class="card-footer">
+              For renewal planning.
+            </div>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Staff ID</th>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Employment</th>
+                <th>Duty Status</th>
+                <th>Shift</th>
+                <th>Phone</th>
+                <th>Contract End</th>
+              </tr>
+            </thead>
+            <tbody id="staffTableBody">
+              <!-- Rows by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Demo HR / staff data
+    const staffMembers = [
+      {
+        id: "ST-001",
+        name: "Dr. Mohamed Hassan",
+        role: "Consultant",
+        department: "Doctors",
+        employment: "Full-time",
+        status: "On Duty",
+        shift: "Morning",
+        phone: "+252 61 555 888",
+        contractStatus: "OK",
+        contractEnd: "2027-12-31"
+      },
+      {
+        id: "ST-002",
+        name: "Dr. Asha Ali",
+        role: "Medical Officer",
+        department: "Doctors",
+        employment: "Full-time",
+        status: "Off Duty",
+        shift: "Evening",
+        phone: "+252 61 201 445",
+        contractStatus: "OK",
+        contractEnd: "2026-06-30"
+      },
+      {
+        id: "ST-003",
+        name: "Nurse Fartun Omar",
+        role: "Nurse",
+        department: "Nursing",
+        employment: "Full-time",
+        status: "On Duty",
+        shift: "Morning",
+        phone: "+252 61 903 112",
+        contractStatus: "Near",
+        contractEnd: "2025-02-15"
+      },
+      {
+        id: "ST-004",
+        name: "Nurse Abdullahi Ahmed",
+        role: "Theatre Nurse",
+        department: "Surgery",
+        employment: "Full-time",
+        status: "On Duty",
+        shift: "Morning",
+        phone: "+252 61 778 990",
+        contractStatus: "OK",
+        contractEnd: "2026-11-01"
+      },
+      {
+        id: "ST-005",
+        name: "Hodan Ismail",
+        role: "Pharmacist",
+        department: "Pharmacy",
+        employment: "Full-time",
+        status: "On Duty",
+        shift: "Evening",
+        phone: "+252 61 220 330",
+        contractStatus: "Near",
+        contractEnd: "2025-01-20"
+      },
+      {
+        id: "ST-006",
+        name: "Yasin Noor",
+        role: "Lab Technician",
+        department: "Laboratory",
+        employment: "Part-time",
+        status: "Off Duty",
+        shift: "Night",
+        phone: "+252 61 114 559",
+        contractStatus: "OK",
+        contractEnd: "2026-03-10"
+      },
+      {
+        id: "ST-007",
+        name: "Abdirahman Aden",
+        role: "Receptionist",
+        department: "Administration",
+        employment: "Full-time",
+        status: "On Duty",
+        shift: "Morning",
+        phone: "+252 61 334 221",
+        contractStatus: "OK",
+        contractEnd: "2027-01-01"
+      },
+      {
+        id: "ST-008",
+        name: "Maryan Warsame",
+        role: "HR Officer",
+        department: "Administration",
+        employment: "Full-time",
+        status: "On Duty",
+        shift: "Morning",
+        phone: "+252 61 998 776",
+        contractStatus: "Near",
+        contractEnd: "2025-03-05"
+      },
+      {
+        id: "ST-009",
+        name: "Ali Abdulle",
+        role: "Cleaner",
+        department: "Support",
+        employment: "Contract",
+        status: "On Leave",
+        shift: "Morning",
+        phone: "+252 61 667 445",
+        contractStatus: "Near",
+        contractEnd: "2025-01-05"
+      },
+      {
+        id: "ST-010",
+        name: "Hussein Mahad",
+        role: "Security",
+        department: "Support",
+        employment: "Contract",
+        status: "On Duty",
+        shift: "Night",
+        phone: "+252 61 123 456",
+        contractStatus: "OK",
+        contractEnd: "2025-12-31"
+      },
+      {
+        id: "ST-011",
+        name: "Khalid Omar",
+        role: "IT Support",
+        department: "Administration",
+        employment: "Full-time",
+        status: "Off Duty",
+        shift: "Evening",
+        phone: "+252 61 789 012",
+        contractStatus: "OK",
+        contractEnd: "2026-09-15"
+      }
+    ];
+
+    const tableBody = document.getElementById("staffTableBody");
+    const filterDepartment = document.getElementById("filterDepartment");
+    const filterRole = document.getElementById("filterRole");
+    const filterEmployment = document.getElementById("filterEmployment");
+    const filterStatus = document.getElementById("filterStatus");
+    const filterSearch = document.getElementById("filterSearch");
+    const globalSearch = document.getElementById("globalSearch");
+
+    const statTotal = document.getElementById("statTotal");
+    const statOnDuty = document.getElementById("statOnDuty");
+    const statOnLeave = document.getElementById("statOnLeave");
+    const statContractsNear = document.getElementById("statContractsNear");
+
+    function getStatusClass(status) {
+      switch (status) {
+        case "On Duty":
+          return "pill pill-green";
+        case "Off Duty":
+          return "pill pill-yellow";
+        case "On Leave":
+          return "pill pill-red";
+        default:
+          return "pill";
+      }
+    }
+
+    function getContractClass(status) {
+      switch (status) {
+        case "Near":
+          return "pill pill-yellow";
+        case "OK":
+          return "pill pill-green";
+        default:
+          return "pill";
+      }
+    }
+
+    function renderTable(rows) {
+      if (!rows.length) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="9" class="text-center">
+              No staff members found for the selected filters.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tableBody.innerHTML = rows
+        .map(staff => `
+          <tr>
+            <td>${staff.id}</td>
+            <td>${staff.name}</td>
+            <td>${staff.role}</td>
+            <td>${staff.department}</td>
+            <td>${staff.employment}</td>
+            <td><span class="${getStatusClass(staff.status)}">${staff.status}</span></td>
+            <td>${staff.shift}</td>
+            <td>${staff.phone}</td>
+            <td><span class="${getContractClass(staff.contractStatus)}">
+              ${staff.contractStatus === "Near" ? "Ending Soon (" + staff.contractEnd + ")" : staff.contractEnd}
+            </span></td>
+          </tr>
+        `)
+        .join("");
+    }
+
+    function updateStats(rows) {
+      statTotal.textContent = rows.length;
+      statOnDuty.textContent = rows.filter(s => s.status === "On Duty").length;
+      statOnLeave.textContent = rows.filter(s => s.status === "On Leave").length;
+      statContractsNear.textContent = rows.filter(s => s.contractStatus === "Near").length;
+    }
+
+    function applyFilters() {
+      const dept = filterDepartment.value;
+      const role = filterRole.value;
+      const employment = filterEmployment.value;
+      const status = filterStatus.value;
+      const searchValue = (filterSearch.value || globalSearch.value || "").toLowerCase().trim();
+
+      const filtered = staffMembers.filter(s => {
+        const matchDept = dept === "all" || s.department === dept;
+        const matchRole = role === "all" || s.role === role;
+        const matchEmployment = employment === "all" || s.employment === employment;
+        const matchStatus = status === "all" || s.status === status;
+
+        const text = (
+          s.id +
+          " " +
+          s.name +
+          " " +
+          s.role +
+          " " +
+          s.department +
+          " " +
+          s.phone
+        ).toLowerCase();
+        const matchSearch = !searchValue || text.includes(searchValue);
+
+        return matchDept && matchRole && matchEmployment && matchStatus && matchSearch;
+      });
+
+      renderTable(filtered);
+      updateStats(filtered);
+    }
+
+    [filterDepartment, filterRole, filterEmployment, filterStatus].forEach(el =>
+      el.addEventListener("change", applyFilters)
+    );
+    [filterSearch, globalSearch].forEach(el =>
+      el.addEventListener("input", applyFilters)
+    );
+
+    // Initial render
+    renderTable(staffMembers);
+    updateStats(staffMembers);
+  </script>
+</body>
+</html>

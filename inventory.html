@@ -960,7 +960,11 @@
             <td>${item.stock}</td>
             <td>${item.reorder}</td>
             <td><span class="${getStockClass(item.stockStatus)}">${item.stockStatus}</span></td>
-            <td><span class="${getExpiryClass(item.expiryStatus)}">${item.expiryStatus === "Valid" ? "Valid ("+item.expiryLabel+")" : item.expiryStatus + " ("+item.expiryLabel+")"}</span></td>
+            <td><span class="${getExpiryClass(item.expiryStatus)}">${
+              item.expiryStatus === "Valid"
+                ? "Valid (" + item.expiryLabel + ")"
+                : item.expiryStatus + " (" + item.expiryLabel + ")"
+            }</span></td>
           </tr>
         `)
         .join("");
@@ -986,9 +990,18 @@
         const matchStock = stockStatus === "all" || item.stockStatus === stockStatus;
         const matchExpiry = expiry === "all" || item.expiryStatus === expiry;
 
-        const text =
-          (item.code + " " + item.name + " " + item.department + " " + item.category + " " + item.batch)
-            .toLowerCase();
+        const text = (
+          item.code +
+          " " +
+          item.name +
+          " " +
+          item.department +
+          " " +
+          item.category +
+          " " +
+          item.batch
+        ).toLowerCase();
+
         const matchSearch = !searchValue || text.includes(searchValue);
 
         return matchDept && matchCategory && matchStock && matchExpiry && matchSearch;
