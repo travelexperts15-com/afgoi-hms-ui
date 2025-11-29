@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AFGOI HOSPITAL – Emergency Department</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --bg: #778FD7; /* isla background-ka dashboard */
+      --card-bg: #FFFFFF;
+      --text-main: #111827;
+      --text-muted: #6B7280;
+      --border-soft: #E5E7EB;
+      --accent-green: #10B981;
+      --danger: #EF4444;
+      --warning: #F59E0B;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+    }
+
+    .layout {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: #0B1120;
+      color: #E5E7EB;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #38BDF8, #2563EB);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: white;
+    }
+
+    .sidebar-title {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .sidebar-title-main {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .sidebar-title-sub {
+      font-size: 0.75rem;
+      color: #9CA3AF;
+    }
+
+    .sidebar-nav {
+      padding: 1rem 0.5rem 1.25rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .nav-section-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6B7280;
+      padding: 0.25rem 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.55rem 1rem;
+      margin: 0.15rem 0.5rem;
+      border-radius: 0.6rem;
+      font-size: 0.86rem;
+      color: #E5E7EB;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+      text-decoration: none;
+    }
+
+    .nav-item span.icon {
+      font-size: 1rem;
+      width: 1.4rem;
+      text-align: center;
+    }
+
+    .nav-item:hover {
+      background: rgba(37, 99, 235, 0.12);
+    }
+
+    .nav-item.active {
+      background: rgba(37, 99, 235, 0.18);
+      border-left-color: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .sidebar-footer {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.3);
+      font-size: 0.75rem;
+      color: #6B7280;
+    }
+
+    .sidebar-footer span {
+      display: block;
+    }
+
+    /* Main area */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* Top bar */
+    .topbar {
+      height: 64px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      gap: 1rem;
+    }
+
+    .topbar-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .topbar-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .topbar-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .topbar-center {
+      flex: 1;
+      max-width: 420px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .status-pill {
+      font-size: 0.78rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.06);
+      color: var(--accent-green);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #38BDF8, #2563EB);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .user-meta {
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.05rem;
+    }
+
+    .user-name {
+      font-weight: 500;
+    }
+
+    .user-role {
+      color: var(--text-muted);
+    }
+
+    /* Content */
+    .content {
+      flex: 1;
+      padding: 1.25rem 1.5rem 1.5rem;
+      overflow-y: auto;
+    }
+
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1rem;
+      gap: 1rem;
+    }
+
+    .content-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .content-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .content-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .content-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      background: #FFFFFF;
+      color: var(--text-main);
+      border-color: var(--border-soft);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary-dark);
+    }
+
+    .btn-ghost {
+      background: transparent;
+    }
+
+    .btn:active {
+      transform: translateY(0.5px);
+    }
+
+    /* Filters row */
+    .filters-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-select,
+    .filter-input {
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 0.8rem;
+      outline: none;
+      background: #FFFFFF;
+    }
+
+    .filter-select:focus,
+    .filter-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.22);
+    }
+
+    .filters-row .spacer {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    /* Stats cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.9rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 0.8rem;
+      border: 1px solid var(--border-soft);
+      padding: 0.9rem;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.45rem;
+    }
+
+    .card-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .card-stat {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.15rem;
+    }
+
+    .card-footer {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .badge-pill {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      color: var(--text-muted);
+    }
+
+    /* Table */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 0.7rem;
+      border: 1px solid var(--border-soft);
+      background: #FFFFFF;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      min-width: 820px;
+    }
+
+    thead {
+      background: #F9FAFB;
+    }
+
+    th,
+    td {
+      padding: 0.55rem 0.7rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    tr:hover td {
+      background: #F9FAFB;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 500;
+    }
+
+    .pill-green {
+      background: rgba(16, 185, 129, 0.08);
+      color: var(--accent-green);
+    }
+
+    .pill-yellow {
+      background: rgba(245, 158, 11, 0.1);
+      color: #B45309;
+    }
+
+    .pill-red {
+      background: rgba(239, 68, 68, 0.08);
+      color: var(--danger);
+    }
+
+    .text-right { text-align: right; }
+    .text-center { text-align: center; }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .sidebar { width: 220px; }
+    }
+
+    @media (max-width: 768px) {
+      .layout { flex-direction: column; }
+
+      .sidebar {
+        height: auto;
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+      }
+
+      .sidebar-header { display: none; }
+
+      .sidebar-nav {
+        display: flex;
+        padding: 0.4rem;
+      }
+
+      .nav-item {
+        margin: 0.15rem;
+        padding: 0.4rem 0.6rem;
+        border-radius: 999px;
+      }
+
+      .sidebar-footer { display: none; }
+
+      .topbar { padding: 0.6rem 0.9rem; }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .content { padding: 0.9rem; }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .topbar-center { display: none; }
+
+      .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      table { min-width: 640px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-circle">AH</div>
+        <div class="sidebar-title">
+          <span class="sidebar-title-main">AFGOI HOSPITAL</span>
+          <span class="sidebar-title-sub">Hospital Management System</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div style="width: 100%;">
+          <div class="nav-section-label">Main Modules</div>
+
+          <a class="nav-item" href="afgoi-hms-dashboard.html">
+            <span class="icon">🏠</span>
+            <span>Dashboard (Overview)</span>
+          </a>
+
+          <a class="nav-item" href="doctors.html">
+            <span class="icon">👨‍⚕️</span>
+            <span>Doctors</span>
+          </a>
+
+          <a class="nav-item" href="nurses.html">
+            <span class="icon">👩‍⚕️</span>
+            <span>Nurses</span>
+          </a>
+
+          <a class="nav-item" href="patients.html">
+            <span class="icon">🧑‍🦽</span>
+            <span>Patients</span>
+          </a>
+
+          <a class="nav-item" href="admissions.html">
+            <span class="icon">📥</span>
+            <span>Admissions</span>
+          </a>
+
+          <a class="nav-item" href="opd.html">
+            <span class="icon">🏥</span>
+            <span>OPD</span>
+          </a>
+
+          <a class="nav-item" href="laboratory.html">
+            <span class="icon">🧪</span>
+            <span>Laboratory</span>
+          </a>
+
+          <a class="nav-item" href="radiology.html">
+            <span class="icon">🖥️</span>
+            <span>Radiology / X-Ray</span>
+          </a>
+
+          <a class="nav-item" href="surgery.html">
+            <span class="icon">🩺</span>
+            <span>Surgery</span>
+          </a>
+
+          <a class="nav-item" href="pharmacy.html">
+            <span class="icon">💊</span>
+            <span>Pharmacy</span>
+          </a>
+
+          <a class="nav-item" href="inventory.html">
+            <span class="icon">📦</span>
+            <span>Inventory</span>
+          </a>
+
+          <a class="nav-item" href="billing.html">
+            <span class="icon">💰</span>
+            <span>Billing</span>
+          </a>
+
+          <a class="nav-item" href="hr.html">
+            <span class="icon">🧑‍💼</span>
+            <span>HR & Staff</span>
+          </a>
+
+          <!-- Emergency ACTIVE -->
+          <a class="nav-item active" href="emergency.html">
+            <span class="icon">🚨</span>
+            <span>Emergency</span>
+          </a>
+
+          <a class="nav-item" href="discharge.html">
+            <span class="icon">✅</span>
+            <span>Discharge</span>
+          </a>
+
+          <a class="nav-item" href="settings.html">
+            <span class="icon">⚙️</span>
+            <span>Settings</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span>© 2025 – AFGOI HMS</span>
+        <span>All Rights Reserved.</span>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-title">Emergency & Triage</div>
+          <div class="topbar-subtitle">
+            Monitor arrivals, triage levels and treatment status in the Emergency Department.
+          </div>
+        </div>
+        <div class="topbar-center">
+          <input
+            class="search-input"
+            id="globalSearch"
+            placeholder="Quick search by patient, ID, doctor or complaint…"
+          />
+        </div>
+        <div class="topbar-right">
+          <span class="status-pill">ER Load: Moderate</span>
+          <div class="user-chip">
+            <div class="user-avatar">AD</div>
+            <div class="user-meta">
+              <span class="user-name">Admin – AFGOI</span>
+              <span class="user-role">ER Coordinator</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <section class="content">
+        <!-- Header row -->
+        <div class="content-header">
+          <div class="content-title-block">
+            <h1 class="content-title">Emergency Overview</h1>
+            <p class="content-subtitle">
+              Filter by area, triage level, arrival mode and status. (Front-end demo – later will connect to AFGOI HMS ER module.)
+            </p>
+          </div>
+          <div class="content-actions">
+            <button class="btn btn-ghost">Today</button>
+            <button class="btn btn-ghost">Last 4 hours</button>
+            <button class="btn btn-primary">+ New ER Case</button>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card" style="margin-bottom: 1rem;">
+          <div class="filters-row">
+            <select id="filterArea" class="filter-select">
+              <option value="all">All Areas</option>
+              <option value="Adult">Adult</option>
+              <option value="Pediatric">Pediatric</option>
+              <option value="Trauma">Trauma</option>
+              <option value="Resuscitation">Resuscitation</option>
+            </select>
+
+            <select id="filterTriage" class="filter-select">
+              <option value="all">All Triage Levels</option>
+              <option value="Red">Red (Immediate)</option>
+              <option value="Yellow">Yellow (Urgent)</option>
+              <option value="Green">Green (Non-urgent)</option>
+            </select>
+
+            <select id="filterStatus" class="filter-select">
+              <option value="all">All Status</option>
+              <option value="Waiting">Waiting</option>
+              <option value="In Treatment">In Treatment</option>
+              <option value="Observed">Observed</option>
+              <option value="Discharged">Discharged</option>
+            </select>
+
+            <select id="filterArrival" class="filter-select">
+              <option value="all">All Arrival Modes</option>
+              <option value="Ambulance">Ambulance</option>
+              <option value="Walk-in">Walk-in</option>
+              <option value="Referral">Referral</option>
+            </select>
+
+            <div class="spacer"></div>
+
+            <input
+              id="filterSearch"
+              class="filter-input"
+              placeholder="Search by patient, ID or doctor…"
+            />
+          </div>
+        </div>
+
+        <!-- Summary cards -->
+        <div class="stats-grid">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Total Cases (Filtered)</span>
+              <span class="badge-pill">Current view</span>
+            </div>
+            <div class="card-stat" id="statTotal">0</div>
+            <div class="card-footer">
+              All ER cases that match selected filters.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Waiting</span>
+              <span class="badge-pill">In queue</span>
+            </div>
+            <div class="card-stat" id="statWaiting">0</div>
+            <div class="card-footer">
+              Patients not yet seen by a doctor.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">In Treatment</span>
+              <span class="badge-pill">Active</span>
+            </div>
+            <div class="card-stat" id="statInTreatment">0</div>
+            <div class="card-footer">
+              Currently under assessment or treatment.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Critical (Red / Yellow)</span>
+              <span class="badge-pill">High priority</span>
+            </div>
+            <div class="card-stat" id="statCritical">0</div>
+            <div class="card-footer">
+              Total Red + Yellow triage cases in this view.
+            </div>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Case ID</th>
+                <th>Patient</th>
+                <th>Age</th>
+                <th>Area</th>
+                <th>Triage</th>
+                <th>Status</th>
+                <th>Arrival</th>
+                <th>Doctor</th>
+                <th>Room/Bed</th>
+                <th>Time In</th>
+              </tr>
+            </thead>
+            <tbody id="erTableBody">
+              <!-- Rows by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Demo Emergency data
+    const erCases = [
+      {
+        id: "ER-2025-001",
+        patient: "Ahmed Ali (#P-1021)",
+        age: 32,
+        area: "Adult",
+        triage: "Red",
+        status: "In Treatment",
+        arrival: "Ambulance",
+        doctor: "Dr. Hassan",
+        bed: "Resus-01",
+        timeIn: "08:45"
+      },
+      {
+        id: "ER-2025-002",
+        patient: "Hodan Ismail (#P-1033)",
+        age: 27,
+        area: "Pediatric",
+        triage: "Yellow",
+        status: "Waiting",
+        arrival: "Walk-in",
+        doctor: "—",
+        bed: "P-05",
+        timeIn: "09:05"
+      },
+      {
+        id: "ER-2025-003",
+        patient: "Yasin Noor (#P-0998)",
+        age: 40,
+        area: "Trauma",
+        triage: "Red",
+        status: "Observed",
+        arrival: "Ambulance",
+        doctor: "Dr. Mohamed",
+        bed: "T-02",
+        timeIn: "07:55"
+      },
+      {
+        id: "ER-2025-004",
+        patient: "Fartun Omar (#P-1005)",
+        age: 19,
+        area: "Adult",
+        triage: "Green",
+        status: "Discharged",
+        arrival: "Walk-in",
+        doctor: "Dr. Asha",
+        bed: "A-09",
+        timeIn: "06:30"
+      },
+      {
+        id: "ER-2025-005",
+        patient: "Abdullahi Mohamed (#P-1018)",
+        age: 52,
+        area: "Resuscitation",
+        triage: "Yellow",
+        status: "In Treatment",
+        arrival: "Referral",
+        doctor: "Dr. Abdi",
+        bed: "Resus-02",
+        timeIn: "09:20"
+      }
+    ];
+
+    const tableBody = document.getElementById("erTableBody");
+    const filterArea = document.getElementById("filterArea");
+    const filterTriage = document.getElementById("filterTriage");
+    const filterStatus = document.getElementById("filterStatus");
+    const filterArrival = document.getElementById("filterArrival");
+    const filterSearch = document.getElementById("filterSearch");
+    const globalSearch = document.getElementById("globalSearch");
+
+    const statTotal = document.getElementById("statTotal");
+    const statWaiting = document.getElementById("statWaiting");
+    const statInTreatment = document.getElementById("statInTreatment");
+    const statCritical = document.getElementById("statCritical");
+
+    function getTriageClass(level) {
+      switch (level) {
+        case "Red":
+          return "pill pill-red";
+        case "Yellow":
+          return "pill pill-yellow";
+        case "Green":
+          return "pill pill-green";
+        default:
+          return "pill";
+      }
+    }
+
+    function getStatusClass(status) {
+      switch (status) {
+        case "Waiting":
+          return "pill pill-yellow";
+        case "In Treatment":
+          return "pill pill-green";
+        case "Observed":
+          return "pill pill-yellow";
+        case "Discharged":
+          return "pill";
+        default:
+          return "pill";
+      }
+    }
+
+    function renderTable(rows) {
+      if (!rows.length) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="10" class="text-center">
+              No Emergency cases found for the selected filters.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tableBody.innerHTML = rows
+        .map(item => `
+          <tr>
+            <td>${item.id}</td>
+            <td>${item.patient}</td>
+            <td>${item.age}</td>
+            <td>${item.area}</td>
+            <td><span class="${getTriageClass(item.triage)}">${item.triage}</span></td>
+            <td><span class="${getStatusClass(item.status)}">${item.status}</span></td>
+            <td>${item.arrival}</td>
+            <td>${item.doctor}</td>
+            <td>${item.bed}</td>
+            <td>${item.timeIn}</td>
+          </tr>
+        `)
+        .join("");
+    }
+
+    function updateStats(rows) {
+      statTotal.textContent = rows.length;
+      statWaiting.textContent = rows.filter(c => c.status === "Waiting").length;
+      statInTreatment.textContent = rows.filter(c => c.status === "In Treatment").length;
+      statCritical.textContent = rows.filter(c => c.triage === "Red" || c.triage === "Yellow").length;
+    }
+
+    function applyFilters() {
+      const area = filterArea.value;
+      const triage = filterTriage.value;
+      const status = filterStatus.value;
+      const arrival = filterArrival.value;
+      const searchValue = (filterSearch.value || globalSearch.value || "").toLowerCase().trim();
+
+      const filtered = erCases.filter(item => {
+        const matchArea = area === "all" || item.area === area;
+        const matchTriage = triage === "all" || item.triage === triage;
+        const matchStatus = status === "all" || item.status === status;
+        const matchArrival = arrival === "all" || item.arrival === arrival;
+
+        const text = (
+          item.id +
+          " " +
+          item.patient +
+          " " +
+          item.doctor +
+          " " +
+          item.area +
+          " " +
+          item.triage
+        ).toLowerCase();
+        const matchSearch = !searchValue || text.includes(searchValue);
+
+        return matchArea && matchTriage && matchStatus && matchArrival && matchSearch;
+      });
+
+      renderTable(filtered);
+      updateStats(filtered);
+    }
+
+    [filterArea, filterTriage, filterStatus, filterArrival].forEach(el =>
+      el.addEventListener("change", applyFilters)
+    );
+    [filterSearch, globalSearch].forEach(el =>
+      el.addEventListener("input", applyFilters)
+    );
+
+    // Initial render
+    renderTable(erCases);
+    updateStats(erCases);
+  </script>
+</body>
+</html>
