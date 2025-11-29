@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AFGOI HOSPITAL – Settings & Configuration</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --bg: #778FD7;
+      --card-bg: #FFFFFF;
+      --text-main: #111827;
+      --text-muted: #6B7280;
+      --border-soft: #E5E7EB;
+      --accent-green: #10B981;
+      --danger: #EF4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+    }
+
+    .layout {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: #0B1120;
+      color: #E5E7EB;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #38BDF8, #2563EB);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: white;
+    }
+
+    .sidebar-title { display: flex; flex-direction: column; gap: 0.15rem; }
+
+    .sidebar-title-main {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .sidebar-title-sub {
+      font-size: 0.75rem;
+      color: #9CA3AF;
+    }
+
+    .sidebar-nav {
+      padding: 1rem 0.5rem 1.25rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .nav-section-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6B7280;
+      padding: 0.25rem 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.55rem 1rem;
+      margin: 0.15rem 0.5rem;
+      border-radius: 0.6rem;
+      font-size: 0.86rem;
+      color: #E5E7EB;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+      text-decoration: none;
+    }
+
+    .nav-item span.icon {
+      font-size: 1rem;
+      width: 1.4rem;
+      text-align: center;
+    }
+
+    .nav-item:hover {
+      background: rgba(37, 99, 235, 0.12);
+    }
+
+    .nav-item.active {
+      background: rgba(37, 99, 235, 0.18);
+      border-left-color: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .sidebar-footer {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.3);
+      font-size: 0.75rem;
+      color: #6B7280;
+    }
+
+    .sidebar-footer span { display: block; }
+
+    /* Main */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .topbar {
+      height: 64px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      gap: 1rem;
+    }
+
+    .topbar-left { display: flex; flex-direction: column; gap: 0.15rem; }
+
+    .topbar-title { font-size: 1.05rem; font-weight: 600; }
+
+    .topbar-subtitle { font-size: 0.82rem; color: var(--text-muted); }
+
+    .topbar-center { flex: 1; max-width: 420px; }
+
+    .search-input {
+      width: 100%;
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .status-pill {
+      font-size: 0.78rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.06);
+      color: var(--accent-green);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #38BDF8, #2563EB);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .user-meta {
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.05rem;
+    }
+
+    .user-name { font-weight: 500; }
+    .user-role { color: var(--text-muted); }
+
+    /* Content */
+    .content {
+      flex: 1;
+      padding: 1.25rem 1.5rem 1.5rem;
+      overflow-y: auto;
+    }
+
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1rem;
+      gap: 1rem;
+    }
+
+    .content-title-block { display: flex; flex-direction: column; gap: 0.25rem; }
+
+    .content-title { font-size: 1.1rem; font-weight: 600; }
+
+    .content-subtitle { font-size: 0.85rem; color: var(--text-muted); }
+
+    .content-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      background: #FFFFFF;
+      color: var(--text-main);
+      border-color: var(--border-soft);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary-dark);
+    }
+
+    .btn-ghost { background: transparent; }
+
+    .btn:active { transform: translateY(0.5px); }
+
+    /* Settings tabs */
+    .tabs-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .tab-pill {
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: #FFFFFF;
+      font-size: 0.8rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .tab-pill.active {
+      background: var(--primary);
+      border-color: var(--primary-dark);
+      color: #FFFFFF;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 0.8rem;
+      border: 1px solid var(--border-soft);
+      padding: 0.9rem 1rem;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.45rem;
+    }
+
+    .card-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .card-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.45rem;
+    }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-bottom: 0.6rem;
+      font-size: 0.8rem;
+    }
+
+    .form-row label { font-weight: 500; }
+
+    .input, .select, .textarea {
+      padding: 0.4rem 0.6rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--border-soft);
+      font-size: 0.8rem;
+      outline: none;
+      width: 100%;
+    }
+
+    .input:focus, .select:focus, .textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.23);
+    }
+
+    .textarea { min-height: 70px; resize: vertical; }
+
+    .switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      font-size: 0.8rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .switch-label { color: var(--text-main); }
+
+    .switch-desc { color: var(--text-muted); font-size: 0.76rem; }
+
+    .switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+    }
+
+    .switch input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      background-color: #E5E7EB;
+      transition: .2s;
+      border-radius: 999px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(15,23,42,0.25);
+    }
+
+    .switch input:checked + .slider {
+      background-color: var(--primary);
+    }
+
+    .switch input:checked + .slider:before {
+      transform: translateX(16px);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      background: rgba(16,185,129,0.08);
+      color: var(--accent-green);
+      border: 1px solid rgba(16,185,129,0.18);
+    }
+
+    .badge-red {
+      background: rgba(239,68,68,0.08);
+      color: var(--danger);
+      border-color: rgba(239,68,68,0.18);
+    }
+
+    .hidden { display: none; }
+
+    @media (max-width: 1024px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .sidebar { width: 220px; }
+    }
+
+    @media (max-width: 768px) {
+      .layout { flex-direction: column; }
+
+      .sidebar {
+        height: auto;
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+      }
+
+      .sidebar-header { display: none; }
+
+      .sidebar-nav { display: flex; padding: 0.4rem; }
+
+      .nav-item {
+        margin: 0.15rem;
+        padding: 0.4rem 0.6rem;
+        border-radius: 999px;
+      }
+
+      .sidebar-footer { display: none; }
+
+      .topbar { padding: 0.6rem 0.9rem; }
+
+      .content { padding: 0.9rem; }
+    }
+
+    @media (max-width: 480px) {
+      .topbar-center { display: none; }
+
+      .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-circle">AH</div>
+        <div class="sidebar-title">
+          <span class="sidebar-title-main">AFGOI HOSPITAL</span>
+          <span class="sidebar-title-sub">Hospital Management System</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div style="width: 100%;">
+          <div class="nav-section-label">Main Modules</div>
+
+          <a class="nav-item" href="afgoi-hms-dashboard.html">
+            <span class="icon">🏠</span>
+            <span>Dashboard (Overview)</span>
+          </a>
+
+          <a class="nav-item" href="doctors.html">
+            <span class="icon">👨‍⚕️</span>
+            <span>Doctors</span>
+          </a>
+
+          <a class="nav-item" href="nurses.html">
+            <span class="icon">👩‍⚕️</span>
+            <span>Nurses</span>
+          </a>
+
+          <a class="nav-item" href="patients.html">
+            <span class="icon">🧑‍🦽</span>
+            <span>Patients</span>
+          </a>
+
+          <a class="nav-item" href="admissions.html">
+            <span class="icon">📥</span>
+            <span>Admissions</span>
+          </a>
+
+          <a class="nav-item" href="opd.html">
+            <span class="icon">🏥</span>
+            <span>OPD</span>
+          </a>
+
+          <a class="nav-item" href="laboratory.html">
+            <span class="icon">🧪</span>
+            <span>Laboratory</span>
+          </a>
+
+          <a class="nav-item" href="radiology.html">
+            <span class="icon">🖥️</span>
+            <span>Radiology / X-Ray</span>
+          </a>
+
+          <a class="nav-item" href="surgery.html">
+            <span class="icon">🩺</span>
+            <span>Surgery</span>
+          </a>
+
+          <a class="nav-item" href="pharmacy.html">
+            <span class="icon">💊</span>
+            <span>Pharmacy</span>
+          </a>
+
+          <a class="nav-item" href="inventory.html">
+            <span class="icon">📦</span>
+            <span>Inventory</span>
+          </a>
+
+          <a class="nav-item" href="billing.html">
+            <span class="icon">💰</span>
+            <span>Billing</span>
+          </a>
+
+          <a class="nav-item" href="hr.html">
+            <span class="icon">🧑‍💼</span>
+            <span>HR & Staff</span>
+          </a>
+
+          <a class="nav-item" href="emergency.html">
+            <span class="icon">🚨</span>
+            <span>Emergency</span>
+          </a>
+
+          <a class="nav-item" href="discharge.html">
+            <span class="icon">✅</span>
+            <span>Discharge</span>
+          </a>
+
+          <!-- SETTINGS ACTIVE -->
+          <a class="nav-item active" href="settings.html">
+            <span class="icon">⚙️</span>
+            <span>Settings</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span>© 2025 – AFGOI HMS</span>
+        <span>All Rights Reserved.</span>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-title">System Settings & Configuration</div>
+          <div class="topbar-subtitle">
+            Manage global preferences, users & roles, notifications and hospital details.
+          </div>
+        </div>
+        <div class="topbar-center">
+          <input
+            class="search-input"
+            id="settingsSearch"
+            placeholder="Search setting by keyword… (demo only)"
+          />
+        </div>
+        <div class="topbar-right">
+          <span class="status-pill">Settings: Demo Mode</span>
+          <div class="user-chip">
+            <div class="user-avatar">AD</div>
+            <div class="user-meta">
+              <span class="user-name">Admin – AFGOI</span>
+              <span class="user-role">System Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <section class="content">
+        <div class="content-header">
+          <div class="content-title-block">
+            <h1 class="content-title">Settings Overview</h1>
+            <p class="content-subtitle">
+              Select a section below to view configuration cards. (Front-end demo – to be connected to AFGOI HMS back-end later.)
+            </p>
+          </div>
+          <div class="content-actions">
+            <button class="btn btn-ghost">Discard Changes</button>
+            <button class="btn btn-primary">Save Changes (Demo)</button>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-row">
+          <button class="tab-pill active" data-section="general">General</button>
+          <button class="tab-pill" data-section="users">Users & Roles</button>
+          <button class="tab-pill" data-section="notifications">Notifications</button>
+          <button class="tab-pill" data-section="hospital">Hospital Profile</button>
+          <button class="tab-pill" data-section="backup">Backup & Security</button>
+        </div>
+
+        <!-- Sections -->
+        <div id="section-general" class="settings-section">
+          <div class="cards-grid">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Localization</div>
+                </div>
+                <span class="badge">Core</span>
+              </div>
+              <p class="card-sub">Language, timezone and date/time formats.</p>
+              <div class="form-row">
+                <label>Default Language</label>
+                <select class="select">
+                  <option>English</option>
+                  <option>Somali</option>
+                  <option>Arabic</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label>Timezone</label>
+                <select class="select">
+                  <option>Africa/Mogadishu (EAT)</option>
+                  <option>Asia/Qatar</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label>Date Format</label>
+                <select class="select">
+                  <option>DD/MM/YYYY</option>
+                  <option>MM/DD/YYYY</option>
+                  <option>YYYY-MM-DD</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Modules Visibility</div>
+                </div>
+                <span class="badge">Front-end demo</span>
+              </div>
+              <p class="card-sub">Enable / disable modules in the AFGOI HMS menu.</p>
+
+              <div class="switch-row">
+                <div>
+                  <div class="switch-label">Pharmacy Module</div>
+                  <div class="switch-desc">Show pharmacy menu & pages.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="switch-row">
+                <div>
+                  <div class="switch-label">Laboratory Module</div>
+                  <div class="switch-desc">Lab orders, results & reports.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="switch-row">
+                <div>
+                  <div class="switch-label">OPD / Clinic Module</div>
+                  <div class="switch-desc">Outpatient visits & queues.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="switch-row">
+                <div>
+                  <div class="switch-label">Billing Module</div>
+                  <div class="switch-desc">Invoices, payments & tariffs.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="section-users" class="settings-section hidden">
+          <div class="cards-grid">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Role Templates</div>
+                </div>
+                <span class="badge">HR & IT</span>
+              </div>
+              <p class="card-sub">Common role profiles used in AFGOI Hospital.</p>
+
+              <ul style="font-size:0.8rem; margin-left:1.1rem; margin-bottom:0.7rem;">
+                <li>Doctor – access to OPD, Inpatient, Orders, Results.</li>
+                <li>Nurse – nursing notes, vitals, admissions & discharge.</li>
+                <li>Pharmacist – prescriptions, inventory, dispensing.</li>
+                <li>Cashier – billing, receipts, basic patient search only.</li>
+                <li>System Admin – full configuration and user management.</li>
+              </ul>
+
+              <div class="form-row">
+                <label>Default Role for New Staff (demo)</label>
+                <select class="select">
+                  <option>Doctor</option>
+                  <option>Nurse</option>
+                  <option>Pharmacist</option>
+                  <option>Cashier</option>
+                  <option>System Admin</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Password & Session Policy</div>
+                </div>
+                <span class="badge">Security</span>
+              </div>
+              <p class="card-sub">High-level security rules for user accounts.</p>
+
+              <div class="form-row">
+                <label>Minimum Password Length</label>
+                <input class="input" type="number" value="8" />
+              </div>
+
+              <div class="switch-row">
+                <div>
+                  <div class="switch-label">Require strong password</div>
+                  <div class="switch-desc">Include numbers & special characters.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="switch-row">
+                <div>
+                  <div class="switch-label">Auto-logout inactive users</div>
+                  <div class="switch-desc">For shared nursing / ward computers.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="form-row">
+                <label>Session Timeout (minutes)</label>
+                <input class="input" type="number" value="20" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="section-notifications" class="settings-section hidden">
+          <div class="cards-grid">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Email Alerts</div>
+                </div>
+                <span class="badge">SMTP</span>
+              </div>
+              <p class="card-sub">Configure outgoing server for system emails. (Demo only)</p>
+
+              <div class="form-row">
+                <label>SMTP Host</label>
+                <input class="input" placeholder="smtp.example.com" />
+              </div>
+              <div class="form-row">
+                <label>Port</label>
+                <input class="input" type="number" value="587" />
+              </div>
+              <div class="form-row">
+                <label>From Email</label>
+                <input class="input" placeholder="no-reply@afgoihospital.com" />
+              </div>
+
+              <div class="switch-row">
+                <div>
+                  <div class="switch-label">Send test email on save</div>
+                  <div class="switch-desc">IT team will verify connectivity.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Clinical Alerts</div>
+                </div>
+                <span class="badge">Doctors & Nurses</span>
+              </div>
+              <p class="card-sub">Which alerts should appear as on-screen notifications.</p>
+
+              <div class="switch-row">
+                <div>
+                  <div class="switch-label">Lab result ready</div>
+                  <div class="switch-desc">Notify ordering doctor & ward nurse.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="switch-row">
+                <div>
+                  <div class="switch-label">Critical lab result</div>
+                  <div class="switch-desc">Highlight in red + sound alert.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="switch-row">
+                <div>
+                  <div class="switch-label">New admission assigned</div>
+                  <div class="switch-desc">Notify responsible doctor / ward team.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="switch-row">
+                <div>
+                  <div class="switch-label">Medication about to expire</div>
+                  <div class="switch-desc">Inventory & pharmacy alerts.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="section-hospital" class="settings-section hidden">
+          <div class="cards-grid">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Hospital Identity</div>
+                </div>
+                <span class="badge">Brand</span>
+              </div>
+              <p class="card-sub">Details that appear on reports, invoices and patient wristbands.</p>
+
+              <div class="form-row">
+                <label>Hospital Name</label>
+                <input class="input" value="AFGOI HOSPITAL" />
+              </div>
+
+              <div class="form-row">
+                <label>Short Name / Code</label>
+                <input class="input" value="AFGOI HMS" />
+              </div>
+
+              <div class="form-row">
+                <label>Address</label>
+                <textarea class="textarea" placeholder="Afgooye, Somalia"></textarea>
+              </div>
+
+              <div class="form-row">
+                <label>Phone / WhatsApp</label>
+                <input class="input" placeholder="+252 61 xxx xxxx" />
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Clinical Defaults</div>
+                </div>
+                <span class="badge">Clinical</span>
+              </div>
+              <p class="card-sub">Default values used when doctors / nurses create orders.</p>
+
+              <div class="form-row">
+                <label>Default OPD Visit Duration</label>
+                <select class="select">
+                  <option>15 minutes</option>
+                  <option>20 minutes</option>
+                  <option>30 minutes</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <label>Default Inpatient Ward for new admission</label>
+                <select class="select">
+                  <option>Medical Ward</option>
+                  <option>Surgical Ward</option>
+                  <option>Maternity</option>
+                  <option>Pediatric Ward</option>
+                </select>
+              </div>
+
+              <div class="switch-row">
+                <div>
+                  <div class="switch-label">Require diagnosis before discharge</div>
+                  <div class="switch-desc">Helps with statistics & reporting.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="section-backup" class="settings-section hidden">
+          <div class="cards-grid">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Backup Schedule</div>
+                </div>
+                <span class="badge">Database</span>
+              </div>
+              <p class="card-sub">High-level plan for data backup. (Implementation will be in back-end.)</p>
+
+              <div class="form-row">
+                <label>Backup Frequency</label>
+                <select class="select">
+                  <option>Every 4 hours</option>
+                  <option>Daily</option>
+                  <option>Weekly</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <label>Retention Period</label>
+                <select class="select">
+                  <option>30 days</option>
+                  <option>90 days</option>
+                  <option>1 year</option>
+                </select>
+              </div>
+
+              <div class="switch-row">
+                <div>
+                  <div class="switch-label">Send email if backup fails</div>
+                  <div class="switch-desc">Alert system admin / IT support.</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">System Status & Environment</div>
+                </div>
+                <span class="badge-red">Read-only Demo</span>
+              </div>
+              <p class="card-sub">
+                This page is a UI template only. Actual environment, servers and audit logs will be handled by the real AFGOI HMS back-end.
+              </p>
+
+              <ul style="font-size:0.8rem; margin-left:1.1rem; margin-bottom:0.7rem;">
+                <li>Environment: <strong>Demo / Front-end only</strong></li>
+                <li>Audit Logs: To be implemented in production build.</li>
+                <li>Data Encryption: To be handled at API & DB level.</li>
+                <li>User Permissions: Will connect with real role-based access control.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Simple tabs logic (front-end demo only)
+    const tabButtons = document.querySelectorAll('.tab-pill');
+    const sections = document.querySelectorAll('.settings-section');
+    const searchInput = document.getElementById('settingsSearch');
+
+    function activateSection(sectionId) {
+      sections.forEach(sec => {
+        sec.classList.toggle('hidden', sec.id !== sectionId);
+      });
+    }
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const sectionKey = btn.getAttribute('data-section');
+        activateSection('section-' + sectionKey);
+      });
+    });
+
+    // Tiny fake search highlight (just demo visual)
+    searchInput.addEventListener('input', () => {
+      const term = searchInput.value.trim().toLowerCase();
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        if (!term) {
+          card.style.outline = 'none';
+          return;
+        }
+        const text = card.innerText.toLowerCase();
+        card.style.outline = text.includes(term)
+          ? '2px solid rgba(37,99,235,0.35)'
+          : 'none';
+      });
+    });
+
+    // Initial section
+    activateSection('section-general');
+  </script>
+</body>
+</html>
